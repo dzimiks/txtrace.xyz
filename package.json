@@ -1,6 +1,6 @@
 {
-  "name": "vercel-og-nextjs",
-  "repository": "https://github.com/vercel/examples.git",
+  "name": "txtrace",
+  "repository": "https://github.com/dzimiks/txtrace.xyz",
   "license": "MIT",
   "private": true,
   "scripts": {
