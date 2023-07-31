@@ -12,7 +12,7 @@ export default function Page({ tx }) {
           content={
             `${
               process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : ''
-            }/api/tx?from=${tx.from}&errorMessage=${tx.error_message}&blockNumber=${tx.block_number}&gasPrice=${tx.gas_price}`}
+            }/api/tx?data=${JSON.stringify(tx)}`}
         />
       </Head>
       <h1>Tenderly Transaction</h1>
@@ -22,16 +22,10 @@ export default function Page({ tx }) {
 }
 
 export async function getServerSideProps(context) {
-  const accountName: string = process.env.TENDERLY_ACCOUNT;
-  const projectName: string = process.env.TENDERLY_PROJECT;
+  // const accountName: string = process.env.TENDERLY_ACCOUNT;
+  // const projectName: string = process.env.TENDERLY_PROJECT;
   const network = context.params.network || '1';
   const txHash = context.params.hash || '0x';
-  console.log({
-    accountName,
-    projectName,
-    network,
-    txHash,
-  });
 
   const TENDERLY_API_BASE_URL = 'https://api.tenderly.co';
   let data: Record<string, any>;
@@ -48,9 +42,17 @@ export async function getServerSideProps(context) {
       },
     );
 
-    data = response.data;
+    data = {
+      errorMessage: response.data.error_message ?? '',
+      blockNumber: response.data.block_number,
+      networkId: response.data.call_trace.network_id || '1',
+      gas: response.data.call_trace.gas,
+      gasUsed: response.data.call_trace.gas_used,
+      txHash: response.data.call_trace.hash,
+      from: response.data.call_trace.from,
+      to: response.data.call_trace.to,
+    };
   } catch (error) {
-    console.error({ error: error.response?.data?.error });
     data = error.response?.data?.error;
   }
 
