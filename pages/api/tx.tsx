@@ -1,5 +1,6 @@
 import { ImageResponse } from '@vercel/og';
 import { NextRequest } from 'next/server';
+import { formatAmount, parseEthValue } from '../../utils/number';
 
 export const config = {
   runtime: 'edge',
@@ -108,7 +109,7 @@ const XIcon = () => (
 
 const boxStyle = 'flex items-center border rounded border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-4xl p-1';
 
-// /api/tx?errorMessage=&blockNumber=18079533&networkId=1&gas=326829&gasUsed=70118&txHash=0xb1db15f95ff8939fea97bba2782a1c7b2f4d0dc7d67097fdb9648d9fb7766870&from=0xd312818347fb054d30925488a7dcfab6e19e9421&to=0xcf5540fffcdc3d510b18bfca6d2b9987b0772559
+// /api/tx?errorMessage=&blockNumber=18079533&networkId=1&gas=326829&gasPrice=70118&txHash=0xb1db15f95ff8939fea97bba2782a1c7b2f4d0dc7d67097fdb9648d9fb7766870&from=0xd312818347fb054d30925488a7dcfab6e19e9421&to=0xcf5540fffcdc3d510b18bfca6d2b9987b0772559
 export default async function handler(req: NextRequest) {
   const fontInterRegularData = await fontInterRegular;
   const fontInterSemiBoldData = await fontInterSemiBold;
@@ -116,31 +117,27 @@ export default async function handler(req: NextRequest) {
 
   const { searchParams } = req.nextUrl;
 
+  // Extract query params
   const errorMessage = searchParams.get('errorMessage');
   const blockNumber = searchParams.get('blockNumber');
   // const networkId = searchParams.get('networkId');
   const networkName = searchParams.get('networkName');
   const networkUrl = searchParams.get('networkUrl');
   const gas = searchParams.get('gas');
-  const gasUsed = searchParams.get('gasUsed');
+  // const gasUsed = searchParams.get('gasUsed');
+  const gasPrice = searchParams.get('gasPrice');
   const txHash = searchParams.get('txHash');
   const from = searchParams.get('from');
   const to = searchParams.get('to');
   const status = searchParams.get('status');
   const createdAt = searchParams.get('createdAt');
-  console.log({
-    errorMessage,
-    blockNumber,
-    txHash,
-    createdAt,
-  });
 
   return new ImageResponse(
     (
       <div
         tw="flex flex-col justify-between bg-white w-full h-screen p-12"
         style={{
-          fontFamily: 'Inter',
+          fontFamily: 'Inter, sans-serif',
         }}
       >
         <div tw="flex w-full justify-between items-center">
@@ -165,7 +162,7 @@ export default async function handler(req: NextRequest) {
             </span>
           </div>
           <img
-            tw="rounded w-32 h-32"
+            tw="rounded w-26 h-26"
             src="https://storage.googleapis.com/tenderly-public-assets/node-extensions/tenderly.png"
             alt="Tenderly"
           />
@@ -185,7 +182,7 @@ export default async function handler(req: NextRequest) {
               </div>
               <div tw={boxStyle}>
                 <BoxIcon />
-                <span tw="ml-2">{blockNumber}</span>
+                <span tw="ml-2">{formatAmount(blockNumber, 0)}</span>
               </div>
             </div>
             <div tw="flex mb-4">
@@ -202,11 +199,11 @@ export default async function handler(req: NextRequest) {
             <div tw="flex items-center">
               <div tw={`${boxStyle} mr-4`}>
                 <FlameIcon />
-                <span tw="ml-2">{gas}</span>
+                <span tw="ml-2">{formatAmount(gas, 0)}</span>
               </div>
               <div tw={boxStyle}>
                 <CoinsIcon />
-                <span tw="ml-2">{gasUsed} Wei</span>
+                <span tw="ml-2">{parseEthValue(gasPrice).value} {parseEthValue(gasPrice).unit}</span>
               </div>
             </div>
           </div>

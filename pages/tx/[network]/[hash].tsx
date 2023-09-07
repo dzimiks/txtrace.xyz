@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Head from 'next/head';
 import { useEffect, useRef } from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next/types';
+import { GetServerSidePropsContext } from 'next/types';
 import { DateTime } from 'luxon';
 import { Icon } from '../../../components/Icon/Icon';
 
@@ -16,6 +16,7 @@ export default function Page(props: Record<string, any>) {
     networkUrl,
     gas,
     gasUsed,
+    gasPrice,
     txHash,
     from,
     to,
@@ -51,6 +52,10 @@ export default function Page(props: Record<string, any>) {
 
   if (gasUsed) {
     queryParams.append('gasUsed', gasUsed);
+  }
+
+  if (gasPrice) {
+    queryParams.append('gasPrice', gasPrice);
   }
 
   if (txHash) {
@@ -107,7 +112,8 @@ export default function Page(props: Record<string, any>) {
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content={`https://www.txtrace.xyz/tx/${networkId}/${txHash}`} />
         <meta property="twitter:title" content="Tenderly Transaction" />
-        <meta property="twitter:description" content={`Transaction details for the ${txHash} on ${networkName} network.`} />
+        <meta property="twitter:description"
+              content={`Transaction details for the ${txHash} on ${networkName} network.`} />
         <meta
           name="twitter:image"
           content={
@@ -194,8 +200,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       networkName: tenderlyNetwork?.name ?? null,
       networkUrl: tenderlyNetwork?.metadata?.icon ?? null,
       gas: response.data.gas,
-      // gasUsed: response.data.gas_used,
-      gasUsed: response.data.gas_price,
+      gasUsed: response.data.gas_used,
       gasPrice: response.data.gas_price,
       txHash: response.data.hash,
       from: response.data.from,
