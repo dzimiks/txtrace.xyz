@@ -94,6 +94,8 @@ const XIcon = () => (
   </i>
 );
 
+const boxStyle = 'flex items-center border rounded border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-5xl p-1';
+
 // /api/tx?errorMessage=&blockNumber=18079533&networkId=1&gas=326829&gasUsed=70118&txHash=0xb1db15f95ff8939fea97bba2782a1c7b2f4d0dc7d67097fdb9648d9fb7766870&from=0xd312818347fb054d30925488a7dcfab6e19e9421&to=0xcf5540fffcdc3d510b18bfca6d2b9987b0772559
 export default async function handler(req: NextRequest) {
   const { searchParams } = req.nextUrl;
@@ -148,32 +150,32 @@ export default async function handler(req: NextRequest) {
         <div tw="flex flex-col">
           <div tw="flex flex-col mb-8">
             <div tw="flex items-center mb-4">
-              <div tw="flex items-center border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-5xl p-1 mr-4">
+              <div tw={`${boxStyle} mr-4`}>
                 <GlobeIcon />
                 <span tw="ml-2">{networkId}</span>
               </div>
-              <div tw="flex items-center border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-5xl p-1">
+              <div tw={boxStyle}>
                 <BoxIcon />
                 <span tw="ml-2">{blockNumber}</span>
               </div>
             </div>
             <div tw="flex mb-4">
-              <div tw="flex items-center border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-5xl p-1 mr-4">
+              <div tw={`${boxStyle} mr-4`}>
                 {generateShortAddress(from)}
               </div>
-              <div tw="flex items-center border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-5xl p-1 mr-4">
+              <div tw={`${boxStyle} mr-4`}>
                 <ArrowRightIcon />
               </div>
-              <div tw="flex items-center border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-5xl p-1">
+              <div tw={boxStyle}>
                 {generateShortAddress(to)}
               </div>
             </div>
             <div tw="flex items-center">
-              <div tw="flex items-center border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-5xl p-1 mr-4">
+              <div tw={`${boxStyle} mr-4`}>
                 <FlameIcon />
                 <span tw="ml-2">{gas}</span>
               </div>
-              <div tw="flex items-center border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-5xl p-1">
+              <div tw={boxStyle}>
                 <CoinsIcon />
                 <span tw="ml-2">{gasUsed}</span>
               </div>
