@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Head from 'next/head';
+import { GetServerSidePropsContext } from 'next/types';
 
 export default function Page({ tx }) {
   return (
@@ -21,7 +22,8 @@ export default function Page({ tx }) {
   );
 }
 
-export async function getServerSideProps(context) {
+// /tx/1/0xb1db15f95ff8939fea97bba2782a1c7b2f4d0dc7d67097fdb9648d9fb7766870
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   // const accountName: string = process.env.TENDERLY_ACCOUNT;
   // const projectName: string = process.env.TENDERLY_PROJECT;
   const network = context.params.network || '1';
@@ -53,7 +55,7 @@ export async function getServerSideProps(context) {
       to: response.data.call_trace.to,
     };
   } catch (error) {
-    data = error.response?.data?.error;
+    data = error.response?.data;
   }
 
   // Pass data to the page via props
