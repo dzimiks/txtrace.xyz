@@ -39,8 +39,8 @@ export default async function handler(req: NextRequest) {
       <div tw="flex flex-col justify-between bg-white w-full h-screen gap-8 px-4 py-8">
         <div tw="flex w-full justify-between items-center gap-2">
           <div tw="flex flex-col text-left text-5xl font-bold text-gray-900">
-            <div tw="flex items-center gap-8">
-              <span>Transaction</span>
+            <div tw="flex items-center">
+              <span tw="mr-4">Transaction</span>
               {!status && <span tw="text-3xl text-[#E5484D]">Failed</span>}
               {status && <span tw="text-3xl text-[#30A46C]">Success</span>}
             </div>
@@ -54,29 +54,29 @@ export default async function handler(req: NextRequest) {
             alt="Tenderly"
           />
         </div>
-        <div tw="flex flex-col flex-wrap gap-4">
-          <div tw="flex flex-col flex-wrap gap-4">
-            <div tw="flex items-center gap-4">
-              <div tw="flex border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-4xl p-1 w-fit">
+        <div tw="flex flex-col flex-wrap">
+          <div tw="flex flex-col flex-wrap">
+            <div tw="flex items-center mb-4">
+              <div tw="flex border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-4xl p-1 w-fit mr-4">
                 {networkId}
               </div>
               <div tw="flex border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-4xl p-1 w-fit">
                 {blockNumber}
               </div>
             </div>
-            <div tw="flex items-center gap-4">
-              <div tw="flex border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-4xl p-1 w-fit">
+            <div tw="flex items-center mb-4">
+              <div tw="flex border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-4xl p-1 w-fit mr-4">
                 {generateShortAddress(from)}
               </div>
-              <div tw="flex border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-4xl p-1 w-fit">
+              <div tw="flex border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-4xl p-1 w-fit mr-4">
                 {'->'}
               </div>
               <div tw="flex border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-4xl p-1 w-fit">
                 {generateShortAddress(to)}
               </div>
             </div>
-            <div tw="flex items-center gap-4">
-              <div tw="flex border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-4xl p-1 w-fit">
+            <div tw="flex items-center">
+              <div tw="flex border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-4xl p-1 w-fit mr-4">
                 {gas}
               </div>
               <div tw="flex border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-4xl p-1 w-fit">
@@ -84,8 +84,8 @@ export default async function handler(req: NextRequest) {
               </div>
             </div>
           </div>
-          <div tw="flex flex-col gap-4 mt-8">
-            <div tw="text-2xl">
+          <div tw="flex flex-col mt-8">
+            <div tw="text-2xl text-slate-500">
               {createdAt}
             </div>
           </div>
