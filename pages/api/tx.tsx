@@ -94,7 +94,7 @@ const XIcon = () => (
   </i>
 );
 
-const boxStyle = 'flex items-center border rounded border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-5xl p-1';
+const boxStyle = 'flex items-center border rounded border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-4xl p-1';
 
 // /api/tx?errorMessage=&blockNumber=18079533&networkId=1&gas=326829&gasUsed=70118&txHash=0xb1db15f95ff8939fea97bba2782a1c7b2f4d0dc7d67097fdb9648d9fb7766870&from=0xd312818347fb054d30925488a7dcfab6e19e9421&to=0xcf5540fffcdc3d510b18bfca6d2b9987b0772559
 export default async function handler(req: NextRequest) {
@@ -119,7 +119,7 @@ export default async function handler(req: NextRequest) {
 
   return new ImageResponse(
     (
-      <div tw="flex flex-col justify-between bg-white w-full h-screen p-16">
+      <div tw="flex flex-col justify-between bg-white w-full h-screen p-12">
         <div tw="flex w-full justify-between items-center">
           <div tw="flex flex-col text-left text-6xl font-bold text-gray-900">
             <div tw="flex items-center mb-4">
@@ -137,8 +137,8 @@ export default async function handler(req: NextRequest) {
                 </span>
               )}
             </div>
-            <span tw="text-indigo-600">
-              {generateShortAddress(txHash)}
+            <span tw="text-indigo-600 text-4xl">
+              {generateShortAddress(txHash, 10, 8)}
             </span>
           </div>
           <img
@@ -147,6 +147,11 @@ export default async function handler(req: NextRequest) {
             alt="Tenderly"
           />
         </div>
+        {errorMessage && (
+          <div tw="flex items-center text-5xl text-[#E5484D]">
+            {errorMessage}
+          </div>
+        )}
         <div tw="flex flex-col">
           <div tw="flex flex-col mb-8">
             <div tw="flex items-center mb-4">
