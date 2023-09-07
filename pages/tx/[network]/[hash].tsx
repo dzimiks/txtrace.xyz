@@ -1,14 +1,18 @@
 import axios from 'axios';
 import Head from 'next/head';
+import { useEffect, useRef } from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next/types';
 import { DateTime } from 'luxon';
 import { Icon } from '../../../components/Icon/Icon';
 
 export default function Page(props: Record<string, any>) {
+  const initialized = useRef(false);
+
   const {
     errorMessage,
     blockNumber,
     networkId,
+    networkName,
     gas,
     gasUsed,
     txHash,
@@ -30,6 +34,10 @@ export default function Page(props: Record<string, any>) {
 
   if (networkId) {
     queryParams.append('networkId', networkId);
+  }
+
+  if (networkName) {
+    queryParams.append('networkName', networkName);
   }
 
   if (gas) {
@@ -61,6 +69,13 @@ export default function Page(props: Record<string, any>) {
   }
 
   console.log({ queryParams: queryParams.toString() });
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+      window.open(`https://dashboard.tenderly.co/tx/${networkId}/${txHash}`, '_self');
+    }
+  }, []);
 
   return (
     <div>
@@ -170,7 +185,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     data = {
       errorMessage: response.data.error_message ?? null,
       blockNumber: response.data.block_number,
-      networkId: networkName ?? response.data.network_id,
+      networkId: response.data.network_id,
+      networkName,
       gas: response.data.gas,
       // gasUsed: response.data.gas_used,
       gasUsed: response.data.gas_price,

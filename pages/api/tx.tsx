@@ -102,7 +102,8 @@ export default async function handler(req: NextRequest) {
 
   const errorMessage = searchParams.get('errorMessage');
   const blockNumber = searchParams.get('blockNumber');
-  const networkId = searchParams.get('networkId');
+  // const networkId = searchParams.get('networkId');
+  const networkName = searchParams.get('networkName');
   const gas = searchParams.get('gas');
   const gasUsed = searchParams.get('gasUsed');
   const txHash = searchParams.get('txHash');
@@ -157,7 +158,7 @@ export default async function handler(req: NextRequest) {
             <div tw="flex items-center mb-4">
               <div tw={`${boxStyle} mr-4`}>
                 <GlobeIcon />
-                <span tw="ml-2">{networkId}</span>
+                <span tw="ml-2">{networkName}</span>
               </div>
               <div tw={boxStyle}>
                 <BoxIcon />
