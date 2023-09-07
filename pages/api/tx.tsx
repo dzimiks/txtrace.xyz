@@ -5,6 +5,18 @@ export const config = {
   runtime: 'edge',
 };
 
+const fontInterRegular = fetch(
+  new URL('../../assets/fonts/Inter-Regular.ttf', import.meta.url),
+).then((res) => res.arrayBuffer());
+
+const fontInterSemiBold = fetch(
+  new URL('../../assets/fonts/Inter-SemiBold.ttf', import.meta.url),
+).then((res) => res.arrayBuffer());
+
+const fontInterBold = fetch(
+  new URL('../../assets/fonts/Inter-Bold.ttf', import.meta.url),
+).then((res) => res.arrayBuffer());
+
 const generateShortAddress = (address: string, leftOffset = 10, rightOffset = 4) => {
   if (!address) {
     return null;
@@ -98,6 +110,10 @@ const boxStyle = 'flex items-center border rounded border-[#ADA9A9] bg-[#E3DFDF]
 
 // /api/tx?errorMessage=&blockNumber=18079533&networkId=1&gas=326829&gasUsed=70118&txHash=0xb1db15f95ff8939fea97bba2782a1c7b2f4d0dc7d67097fdb9648d9fb7766870&from=0xd312818347fb054d30925488a7dcfab6e19e9421&to=0xcf5540fffcdc3d510b18bfca6d2b9987b0772559
 export default async function handler(req: NextRequest) {
+  const fontInterRegularData = await fontInterRegular;
+  const fontInterSemiBoldData = await fontInterSemiBold;
+  const fontInterBoldData = await fontInterBold;
+
   const { searchParams } = req.nextUrl;
 
   const errorMessage = searchParams.get('errorMessage');
@@ -121,7 +137,12 @@ export default async function handler(req: NextRequest) {
 
   return new ImageResponse(
     (
-      <div tw="flex flex-col justify-between bg-white w-full h-screen p-12">
+      <div
+        tw="flex flex-col justify-between bg-white w-full h-screen p-12"
+        style={{
+          fontFamily: 'Inter',
+        }}
+      >
         <div tw="flex w-full justify-between items-center">
           <div tw="flex flex-col text-left text-5xl font-bold text-gray-900">
             <div tw="flex items-center mb-4">
@@ -200,6 +221,26 @@ export default async function handler(req: NextRequest) {
     {
       width: 1200,
       height: 630,
+      fonts: [
+        {
+          name: 'Inter',
+          data: fontInterRegularData,
+          style: 'normal',
+          weight: 400,
+        },
+        {
+          name: 'Inter',
+          data: fontInterSemiBoldData,
+          style: 'normal',
+          weight: 500,
+        },
+        {
+          name: 'Inter',
+          data: fontInterBoldData,
+          style: 'normal',
+          weight: 700,
+        },
+      ],
     },
   );
 }
