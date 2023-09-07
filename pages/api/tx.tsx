@@ -104,6 +104,7 @@ export default async function handler(req: NextRequest) {
   const blockNumber = searchParams.get('blockNumber');
   // const networkId = searchParams.get('networkId');
   const networkName = searchParams.get('networkName');
+  const networkUrl = searchParams.get('networkUrl');
   const gas = searchParams.get('gas');
   const gasUsed = searchParams.get('gasUsed');
   const txHash = searchParams.get('txHash');
@@ -122,17 +123,17 @@ export default async function handler(req: NextRequest) {
     (
       <div tw="flex flex-col justify-between bg-white w-full h-screen p-12">
         <div tw="flex w-full justify-between items-center">
-          <div tw="flex flex-col text-left text-6xl font-bold text-gray-900">
+          <div tw="flex flex-col text-left text-5xl font-bold text-gray-900">
             <div tw="flex items-center mb-4">
               <span tw="mr-4">Transaction</span>
               {!status && (
-                <span tw="flex items-center text-5xl text-[#E5484D]">
+                <span tw="flex items-center text-[#E5484D]">
                   <XIcon />
                   <span tw="ml-2">Failed</span>
                 </span>
               )}
               {status && (
-                <span tw="flex items-center text-5xl text-[#30A46C]">
+                <span tw="flex items-center text-[#30A46C]">
                   <CheckIcon />
                   <span tw="ml-2">Success</span>
                 </span>
@@ -157,7 +158,8 @@ export default async function handler(req: NextRequest) {
           <div tw="flex flex-col mb-8">
             <div tw="flex items-center mb-4">
               <div tw={`${boxStyle} mr-4`}>
-                <GlobeIcon />
+                {/*<GlobeIcon />*/}
+                <img tw="w-10 h-10 border border-[#ADA9A9] rounded-full bg-white" src={networkUrl} alt={networkName} />
                 <span tw="ml-2">{networkName}</span>
               </div>
               <div tw={boxStyle}>

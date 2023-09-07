@@ -13,6 +13,7 @@ export default function Page(props: Record<string, any>) {
     blockNumber,
     networkId,
     networkName,
+    networkUrl,
     gas,
     gasUsed,
     txHash,
@@ -38,6 +39,10 @@ export default function Page(props: Record<string, any>) {
 
   if (networkName) {
     queryParams.append('networkName', networkName);
+  }
+
+  if (networkUrl) {
+    queryParams.append('networkUrl', networkUrl);
   }
 
   if (gas) {
@@ -73,7 +78,7 @@ export default function Page(props: Record<string, any>) {
   useEffect(() => {
     if (!initialized.current) {
       initialized.current = true;
-      window.open(`https://dashboard.tenderly.co/tx/${networkId}/${txHash}`, '_self');
+      // window.open(`https://dashboard.tenderly.co/tx/${networkId}/${txHash}`, '_self');
     }
   }, []);
 
@@ -179,14 +184,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       );
     }
 
-    const networkName = tenderlyNetworks.data
-      .find((network: any) => network.id === response.data.network_id)?.name;
+    const tenderlyNetwork = tenderlyNetworks.data
+      .find((network: any) => network.id === response.data.network_id);
 
     data = {
       errorMessage: response.data.error_message ?? null,
       blockNumber: response.data.block_number,
       networkId: response.data.network_id,
-      networkName,
+      networkName: tenderlyNetwork?.name ?? null,
+      networkUrl: tenderlyNetwork?.metadata?.icon ?? null,
       gas: response.data.gas,
       // gasUsed: response.data.gas_used,
       gasUsed: response.data.gas_price,
