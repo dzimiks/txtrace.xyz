@@ -12,11 +12,13 @@
   "dependencies": {
     "@vercel/og": "latest",
     "axios": "^1.4.0",
+    "luxon": "^3.4.3",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest"
   },
   "devDependencies": {
+    "@types/luxon": "^3.3.2",
     "@types/node": "^18.15.5",
     "@types/react": "^18.0.28",
     "eslint": "^8.46.0",

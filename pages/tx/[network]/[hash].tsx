@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Head from 'next/head';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next/types';
+import { DateTime } from 'luxon';
 
 export default function Page(props: Record<string, any>) {
   const {
@@ -12,17 +13,51 @@ export default function Page(props: Record<string, any>) {
     txHash,
     from,
     to,
+    status,
+    createdAt,
   } = props;
 
   const queryParams = new URLSearchParams();
-  queryParams.append('errorMessage', errorMessage);
-  queryParams.append('blockNumber', blockNumber);
-  queryParams.append('networkId', networkId);
-  queryParams.append('gas', gas);
-  queryParams.append('gasUsed', gasUsed);
-  queryParams.append('txHash', txHash);
-  queryParams.append('from', from);
-  queryParams.append('to', to);
+
+  if (errorMessage) {
+    queryParams.append('errorMessage', errorMessage);
+  }
+
+  if (blockNumber) {
+    queryParams.append('blockNumber', blockNumber);
+  }
+
+  if (networkId) {
+    queryParams.append('networkId', networkId);
+  }
+
+  if (gas) {
+    queryParams.append('gas', gas);
+  }
+
+  if (gasUsed) {
+    queryParams.append('gasUsed', gasUsed);
+  }
+
+  if (txHash) {
+    queryParams.append('txHash', txHash);
+  }
+
+  if (from) {
+    queryParams.append('from', from);
+  }
+
+  if (to) {
+    queryParams.append('to', to);
+  }
+
+  if (status) {
+    queryParams.append('status', status);
+  }
+
+  if (createdAt) {
+    queryParams.append('createdAt', createdAt);
+  }
 
   console.log({ queryParams: queryParams.toString() });
 
@@ -45,7 +80,16 @@ export default function Page(props: Record<string, any>) {
   );
 }
 
-// /tx/1/0xb1db15f95ff8939fea97bba2782a1c7b2f4d0dc7d67097fdb9648d9fb7766870
+const formatDate = (date: string) => {
+  if (!date) {
+    return null;
+  }
+
+  return DateTime.fromISO(date).toFormat('ff');
+};
+
+// /tx/1/0x849dc9d371da5060defcdd4d4df36202ea8e4ebfb29bc061d718ad8dd5d15e32 - failed
+// /tx/1/0xb1db15f95ff8939fea97bba2782a1c7b2f4d0dc7d67097fdb9648d9fb7766870 - success
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   // const accountName: string = process.env.TENDERLY_ACCOUNT;
   // const projectName: string = process.env.TENDERLY_PROJECT;
@@ -67,6 +111,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     );
 
+    console.log({ created_at: response.data.created_at, data: response.data });
     data = {
       errorMessage: response.data.error_message ?? '',
       blockNumber: response.data.block_number,
@@ -76,10 +121,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       txHash: response.data.call_trace.hash,
       from: response.data.call_trace.from,
       to: response.data.call_trace.to,
+      status: !!response.data.call_trace?.error ?? null,
+      createdAt: formatDate(response.data.created_at),
     };
   } catch (error) {
+    console.error({ error: error.response?.data });
     data = {
-      errorMessage: error.response?.data?.message ?? 'Error occurred',
+      errorMessage: error.response?.data?.error?.message ?? 'Error occurred',
     };
   }
 
