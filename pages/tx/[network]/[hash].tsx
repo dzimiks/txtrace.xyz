@@ -1,8 +1,31 @@
 import axios from 'axios';
 import Head from 'next/head';
-import { GetServerSidePropsContext } from 'next/types';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next/types';
 
-export default function Page({ tx }) {
+export default function Page(props: Record<string, any>) {
+  const {
+    errorMessage,
+    blockNumber,
+    networkId,
+    gas,
+    gasUsed,
+    txHash,
+    from,
+    to,
+  } = props;
+
+  const queryParams = new URLSearchParams();
+  queryParams.append('errorMessage', errorMessage);
+  queryParams.append('blockNumber', blockNumber);
+  queryParams.append('networkId', networkId);
+  queryParams.append('gas', gas);
+  queryParams.append('gasUsed', gasUsed);
+  queryParams.append('txHash', txHash);
+  queryParams.append('from', from);
+  queryParams.append('to', to);
+
+  console.log({ queryParams: queryParams.toString() });
+
   return (
     <div>
       <Head>
@@ -13,11 +36,11 @@ export default function Page({ tx }) {
           content={
             `${
               process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : ''
-            }/api/tx?data=${JSON.stringify(tx)}`}
+            }/api/tx?${queryParams.toString()}`}
         />
       </Head>
       <h1>Tenderly Transaction</h1>
-      <pre>{JSON.stringify(tx, null, 2)}</pre>
+      <pre>{JSON.stringify(props, null, 2)}</pre>
     </div>
   );
 }
@@ -55,13 +78,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       to: response.data.call_trace.to,
     };
   } catch (error) {
-    data = error.response?.data;
+    data = {
+      errorMessage: error.response?.data?.message ?? 'Error occurred',
+    };
   }
 
   // Pass data to the page via props
   return {
     props: {
-      tx: data ?? {},
+      ...data,
     },
   };
 }
