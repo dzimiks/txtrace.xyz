@@ -117,19 +117,19 @@ export default async function handler(req: NextRequest) {
 
   return new ImageResponse(
     (
-      <div tw="flex flex-col justify-between bg-white w-full h-screen px-4 py-8">
+      <div tw="flex flex-col justify-between bg-white w-full h-screen p-16">
         <div tw="flex w-full justify-between items-center">
-          <div tw="flex flex-col text-left text-5xl font-bold text-gray-900">
+          <div tw="flex flex-col text-left text-6xl font-bold text-gray-900">
             <div tw="flex items-center mb-4">
               <span tw="mr-4">Transaction</span>
               {!status && (
-                <span tw="flex items-center text-3xl text-[#E5484D]">
+                <span tw="flex items-center text-5xl text-[#E5484D]">
                   <XIcon />
                   <span tw="ml-2">Failed</span>
                 </span>
               )}
               {status && (
-                <span tw="flex items-center text-3xl text-[#30A46C]">
+                <span tw="flex items-center text-5xl text-[#30A46C]">
                   <CheckIcon />
                   <span tw="ml-2">Success</span>
                 </span>
@@ -140,7 +140,7 @@ export default async function handler(req: NextRequest) {
             </span>
           </div>
           <img
-            tw="rounded w-24 h-24"
+            tw="rounded w-32 h-32"
             src="https://storage.googleapis.com/tenderly-public-assets/node-extensions/tenderly.png"
             alt="Tenderly"
           />
@@ -148,39 +148,39 @@ export default async function handler(req: NextRequest) {
         <div tw="flex flex-col">
           <div tw="flex flex-col mb-8">
             <div tw="flex items-center mb-4">
-              <div tw="flex items-center border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-4xl p-1 mr-4">
+              <div tw="flex items-center border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-5xl p-1 mr-4">
                 <GlobeIcon />
                 <span tw="ml-2">{networkId}</span>
               </div>
-              <div tw="flex items-center border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-4xl p-1">
+              <div tw="flex items-center border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-5xl p-1">
                 <BoxIcon />
                 <span tw="ml-2">{blockNumber}</span>
               </div>
             </div>
             <div tw="flex mb-4">
-              <div tw="flex items-center border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-4xl p-1 mr-4">
+              <div tw="flex items-center border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-5xl p-1 mr-4">
                 {generateShortAddress(from)}
               </div>
-              <div tw="flex items-center border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-4xl p-1 mr-4">
+              <div tw="flex items-center border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-5xl p-1 mr-4">
                 <ArrowRightIcon />
               </div>
-              <div tw="flex items-center border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-4xl p-1">
+              <div tw="flex items-center border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-5xl p-1">
                 {generateShortAddress(to)}
               </div>
             </div>
             <div tw="flex items-center">
-              <div tw="flex items-center border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-4xl p-1 mr-4">
+              <div tw="flex items-center border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-5xl p-1 mr-4">
                 <FlameIcon />
                 <span tw="ml-2">{gas}</span>
               </div>
-              <div tw="flex items-center border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-4xl p-1">
+              <div tw="flex items-center border border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-5xl p-1">
                 <CoinsIcon />
                 <span tw="ml-2">{gasUsed}</span>
               </div>
             </div>
           </div>
           <div tw="flex flex-col">
-            <div tw="flex items-center text-2xl text-slate-500">
+            <div tw="flex items-center text-3xl text-slate-500">
               {createdAt}
             </div>
           </div>
