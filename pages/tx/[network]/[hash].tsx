@@ -64,10 +64,31 @@ export default function Page(props: Record<string, any>) {
   return (
     <div>
       <Head>
-        <meta name="og:title" content="Tenderly Tx OG Image Test" />
-        <meta name="og:description" content="dzimiks testing..." />
+        {/* Primary Meta Tags */}
+        <title>Tenderly Transaction</title>
+        <meta name="title" content="Tenderly Transaction" />
+        <meta name="description" content={`Transaction details for the ${txHash}.`} />
+
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://www.txtrace.xyz/tx/${networkId}/${txHash}`} />
+        <meta property="og:title" content="Tenderly Transaction" />
+        <meta property="og:description" content={`Transaction details for the ${txHash}.`} />
         <meta
           name="og:image"
+          content={
+            `${
+              process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : ''
+            }/api/tx?${queryParams.toString()}`}
+        />
+
+        {/* Twitter */}
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content={`https://www.txtrace.xyz/tx/${networkId}/${txHash}`} />
+        <meta property="twitter:title" content="Tenderly Transaction" />
+        <meta property="twitter:description" content={`Transaction details for the ${txHash}.`} />
+        <meta
+          name="twitter:image"
           content={
             `${
               process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : ''
