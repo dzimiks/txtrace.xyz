@@ -182,7 +182,7 @@ export default async function handler(req: NextRequest) {
               </div>
               <div tw={boxStyle}>
                 <CoinsIcon />
-                <span tw="ml-2">{gasUsed}</span>
+                <span tw="ml-2">{gasUsed} Wei</span>
               </div>
             </div>
           </div>

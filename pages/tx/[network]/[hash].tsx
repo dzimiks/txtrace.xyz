@@ -143,7 +143,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   try {
     const response = await axios.get(
       // `${TENDERLY_API_BASE_URL}/api/v1/account/${accountName}/project/${projectName}/network/${network}/transaction/${txHash}`,
-      `${TENDERLY_API_BASE_URL}/api/v1/public-contract/${network}/trace/${txHash}`,
+      // `${TENDERLY_API_BASE_URL}/api/v1/public-contract/${network}/trace/${txHash}`,
+      `${TENDERLY_API_BASE_URL}/api/v1/public-contract/${network}/tx/${txHash}`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -157,26 +158,28 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     });
 
     // Check if the network is supported by Tenderly
-    if (!networkIds.includes(Number(response.data.call_trace.network_id))) {
+    if (!networkIds.includes(Number(response.data.network_id))) {
       throw new Error(
-        `Chain ID ${response.data.call_trace.network_id} is not supported by Tenderly.`,
+        `Chain ID ${response.data.network_id} is not supported by Tenderly.`,
       );
     }
 
     const networkName = tenderlyNetworks.data
-      .find((network: any) => network.id === response.data.call_trace.network_id)?.name;
+      .find((network: any) => network.id === response.data.network_id)?.name;
 
     data = {
-      errorMessage: response.data.call_trace?.error ?? null,
+      errorMessage: response.data.error_message ?? null,
       blockNumber: response.data.block_number,
-      networkId: networkName ?? response.data.call_trace.network_id,
-      gas: response.data.call_trace.gas,
-      gasUsed: response.data.call_trace.gas_used,
-      txHash: response.data.call_trace.hash,
-      from: response.data.call_trace.from,
-      to: response.data.call_trace.to,
-      status: !response.data.call_trace?.error,
-      createdAt: formatDate(response.data.created_at),
+      networkId: networkName ?? response.data.network_id,
+      gas: response.data.gas,
+      // gasUsed: response.data.gas_used,
+      gasUsed: response.data.gas_price,
+      gasPrice: response.data.gas_price,
+      txHash: response.data.hash,
+      from: response.data.from,
+      to: response.data.to,
+      status: response.data.status,
+      createdAt: formatDate(response.data.timestamp),
     };
   } catch (error) {
     data = {
