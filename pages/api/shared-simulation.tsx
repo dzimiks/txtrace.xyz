@@ -102,7 +102,7 @@ const XIcon = () => (
 
 const boxStyle = 'flex items-center border rounded border-[#ADA9A9] bg-[#E3DFDF] text-[#1e1e1e] text-4xl p-1';
 
-// /api/tx?errorMessage=&blockNumber=18079533&networkId=1&gas=326829&gasPrice=70118&txHash=0xb1db15f95ff8939fea97bba2782a1c7b2f4d0dc7d67097fdb9648d9fb7766870&from=0xd312818347fb054d30925488a7dcfab6e19e9421&to=0xcf5540fffcdc3d510b18bfca6d2b9987b0772559
+// http://localhost:3000/shared/simulation/e53cb49a-0cfa-463b-9084-a6f3bc4174c8
 export default async function handler(req: NextRequest) {
   const fontInterRegularData = await fontInterRegular;
   const fontInterSemiBoldData = await fontInterSemiBold;
@@ -136,7 +136,7 @@ export default async function handler(req: NextRequest) {
         <div tw="flex w-full justify-between items-center">
           <div tw="flex flex-col text-left text-5xl font-bold text-gray-900">
             <div tw="flex items-center mb-4">
-              <span tw="mr-4">Transaction</span>
+              <span tw="mr-4">Simulated Transaction</span>
               {!status && (
                 <span tw="flex items-center text-[#E5484D]">
                   <XIcon />

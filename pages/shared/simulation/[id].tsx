@@ -2,13 +2,14 @@ import axios from 'axios';
 import Head from 'next/head';
 import { useEffect, useRef } from 'react';
 import { GetServerSidePropsContext } from 'next/types';
-import { Icon } from '../../../components/Icon/Icon';
 import { formatDate } from '../../../utils/date';
 
 export default function Page(props: Record<string, any>) {
   const initialized = useRef(false);
 
   const {
+    id,
+    txHash,
     errorMessage,
     blockNumber,
     networkId,
@@ -17,14 +18,18 @@ export default function Page(props: Record<string, any>) {
     gas,
     gasUsed,
     gasPrice,
-    txHash,
     from,
     to,
     status,
+    shared,
     createdAt,
   } = props;
 
   const queryParams = new URLSearchParams();
+
+  if (id) {
+    queryParams.append('id', id);
+  }
 
   if (errorMessage) {
     queryParams.append('errorMessage', errorMessage);
@@ -36,6 +41,10 @@ export default function Page(props: Record<string, any>) {
 
   if (networkId) {
     queryParams.append('networkId', networkId);
+  }
+
+  if (txHash) {
+    queryParams.append('txHash', txHash);
   }
 
   if (networkName) {
@@ -58,10 +67,6 @@ export default function Page(props: Record<string, any>) {
     queryParams.append('gasPrice', gasPrice);
   }
 
-  if (txHash) {
-    queryParams.append('txHash', txHash);
-  }
-
   if (from) {
     queryParams.append('from', from);
   }
@@ -74,16 +79,18 @@ export default function Page(props: Record<string, any>) {
     queryParams.append('status', status);
   }
 
+  if (shared) {
+    queryParams.append('shared', shared);
+  }
+
   if (createdAt) {
     queryParams.append('createdAt', createdAt);
   }
 
-  console.log({ queryParams: queryParams.toString() });
-
   useEffect(() => {
     if (!initialized.current) {
       initialized.current = true;
-      window.open(`https://dashboard.tenderly.co/tx/${networkId}/${txHash}`, '_self');
+      window.open(`https://dashboard.tenderly.co/shared/simulation/${id}`, '_self');
     }
   }, []);
 
@@ -91,57 +98,50 @@ export default function Page(props: Record<string, any>) {
     <div>
       <Head>
         {/* Primary Meta Tags */}
-        <title>Tenderly Transaction</title>
-        <meta name="title" content="Tenderly Transaction" />
-        <meta name="description" content={`Transaction details for the ${txHash} on ${networkName} network.`} />
+        <title>Simulated Transaction</title>
+        <meta name="title" content="Simulated Transaction" />
+        <meta name="description"
+              content={`Simulated transaction details for the ${txHash} on ${networkName} network.`} />
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={`https://www.txtrace.xyz/tx/${networkId}/${txHash}`} />
-        <meta property="og:title" content="Tenderly Transaction" />
-        <meta property="og:description" content={`Transaction details for the ${txHash} on ${networkName} network.`} />
+        <meta property="og:url" content={`https://www.txtrace.xyz/shared/simulation/${id}`} />
+        <meta property="og:title" content="Simulated Transaction" />
+        <meta property="og:description"
+              content={`Simulated transaction details for the ${txHash} on ${networkName} network.`} />
         <meta
           name="og:image"
           content={
             `${
               process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : ''
-            }/api/tx?${queryParams.toString()}`}
+            }/api/shared-simulation?${queryParams.toString()}`}
         />
 
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content={`https://www.txtrace.xyz/tx/${networkId}/${txHash}`} />
-        <meta property="twitter:title" content="Tenderly Transaction" />
+        <meta property="twitter:url" content={`https://www.txtrace.xyz/shared/simulation/${id}`} />
+        <meta property="twitter:title" content="Simulated Transaction" />
         <meta property="twitter:description"
-              content={`Transaction details for the ${txHash} on ${networkName} network.`} />
+              content={`Simulated transaction details for the ${txHash} on ${networkName} network.`} />
         <meta
           name="twitter:image"
           content={
             `${
               process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : ''
-            }/api/tx?${queryParams.toString()}`}
+            }/api/shared-simulation?${queryParams.toString()}`}
         />
       </Head>
-      <h1>Tenderly Transaction</h1>
+      <h1>Simulated Transaction</h1>
       <pre>{JSON.stringify(props, null, 2)}</pre>
-      <Icon icon="globe" />
-      <Icon icon="box" />
-      <Icon icon="arrow-right" />
-      <Icon icon="flame" />
-      <Icon icon="coins" />
-      <Icon icon="check" />
-      <Icon icon="x" />
     </div>
   );
 }
 
-// /tx/1/0x849dc9d371da5060defcdd4d4df36202ea8e4ebfb29bc061d718ad8dd5d15e32 - failed
-// /tx/1/0xb1db15f95ff8939fea97bba2782a1c7b2f4d0dc7d67097fdb9648d9fb7766870 - success
+// /shared/simulation/e53cb49a-0cfa-463b-9084-a6f3bc4174c8 - success
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   // const accountName: string = process.env.TENDERLY_ACCOUNT;
   // const projectName: string = process.env.TENDERLY_PROJECT;
-  const network = context.params.network || '1';
-  const txHash = context.params.hash || '0x';
+  const id = context.params.id || '0x';
 
   const TENDERLY_API_BASE_URL = 'https://api.tenderly.co';
   let data: Record<string, any>;
@@ -160,9 +160,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   try {
     const response = await axios.get(
-      // `${TENDERLY_API_BASE_URL}/api/v1/account/${accountName}/project/${projectName}/network/${network}/transaction/${txHash}`,
-      // `${TENDERLY_API_BASE_URL}/api/v1/public-contract/${network}/trace/${txHash}`,
-      `${TENDERLY_API_BASE_URL}/api/v1/public-contract/${network}/tx/${txHash}`,
+      `${TENDERLY_API_BASE_URL}/api/v1/simulations/${id}`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -171,34 +169,32 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     );
 
-    console.log({
-      responseData: response.data,
-    });
-
     // Check if the network is supported by Tenderly
-    if (!networkIds.includes(Number(response.data.network_id))) {
+    if (!networkIds.includes(Number(response.data.simulation.network_id))) {
       throw new Error(
-        `Chain ID ${response.data.network_id} is not supported by Tenderly.`,
+        `Chain ID ${response.data.simulation.network_id} is not supported by Tenderly.`,
       );
     }
 
     const tenderlyNetwork = tenderlyNetworks.data
-      .find((network: any) => network.id === response.data.network_id);
+      .find((network: any) => network.id === response.data.simulation.network_id);
 
     data = {
-      errorMessage: response.data.error_message ?? null,
-      blockNumber: response.data.block_number,
-      networkId: response.data.network_id,
+      errorMessage: response.data.simulation.error_message ?? null,
+      blockNumber: response.data.simulation.block_number,
+      networkId: response.data.simulation.network_id,
       networkName: tenderlyNetwork?.name ?? null,
       networkUrl: tenderlyNetwork?.metadata?.icon ?? null,
-      gas: response.data.gas,
-      gasUsed: response.data.gas_used,
-      gasPrice: response.data.gas_price,
-      txHash: response.data.hash,
-      from: response.data.from,
-      to: response.data.to,
-      status: response.data.status,
-      createdAt: formatDate(response.data.timestamp),
+      gas: response.data.simulation.gas,
+      gasUsed: response.data.simulation.gas_used,
+      gasPrice: response.data.simulation.gas_price,
+      id: response.data.simulation.id,
+      txHash: response.data.transaction.hash,
+      from: response.data.simulation.from,
+      to: response.data.simulation.to,
+      status: response.data.simulation.status,
+      shared: response.data.simulation.shared,
+      createdAt: formatDate(response.data.simulation.created_at),
     };
   } catch (error) {
     data = {
