@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { useEffect, useRef } from 'react';
 import { GetServerSidePropsContext } from 'next/types';
 import { formatDate } from '../../../utils/date';
+import { getSharedSimulationQueryParams } from '../../../utils/tenderly';
 
 export default function Page(props: Record<string, any>) {
   const initialized = useRef(false);
@@ -10,82 +11,10 @@ export default function Page(props: Record<string, any>) {
   const {
     id,
     txHash,
-    errorMessage,
-    blockNumber,
-    networkId,
     networkName,
-    networkUrl,
-    gas,
-    gasUsed,
-    gasPrice,
-    from,
-    to,
-    status,
-    shared,
-    createdAt,
   } = props;
 
-  const queryParams = new URLSearchParams();
-
-  if (id) {
-    queryParams.append('id', id);
-  }
-
-  if (errorMessage) {
-    queryParams.append('errorMessage', errorMessage);
-  }
-
-  if (blockNumber) {
-    queryParams.append('blockNumber', blockNumber);
-  }
-
-  if (networkId) {
-    queryParams.append('networkId', networkId);
-  }
-
-  if (txHash) {
-    queryParams.append('txHash', txHash);
-  }
-
-  if (networkName) {
-    queryParams.append('networkName', networkName);
-  }
-
-  if (networkUrl) {
-    queryParams.append('networkUrl', networkUrl);
-  }
-
-  if (gas) {
-    queryParams.append('gas', gas);
-  }
-
-  if (gasUsed) {
-    queryParams.append('gasUsed', gasUsed);
-  }
-
-  if (gasPrice) {
-    queryParams.append('gasPrice', gasPrice);
-  }
-
-  if (from) {
-    queryParams.append('from', from);
-  }
-
-  if (to) {
-    queryParams.append('to', to);
-  }
-
-  if (status) {
-    queryParams.append('status', status);
-  }
-
-  if (shared) {
-    queryParams.append('shared', shared);
-  }
-
-  if (createdAt) {
-    queryParams.append('createdAt', createdAt);
-  }
+  const queryParams = getSharedSimulationQueryParams(props);
 
   useEffect(() => {
     if (!initialized.current) {
@@ -139,8 +68,6 @@ export default function Page(props: Record<string, any>) {
 
 // /shared/simulation/e53cb49a-0cfa-463b-9084-a6f3bc4174c8 - success
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  // const accountName: string = process.env.TENDERLY_ACCOUNT;
-  // const projectName: string = process.env.TENDERLY_PROJECT;
   const id = context.params.id || '0x';
 
   const TENDERLY_API_BASE_URL = 'https://api.tenderly.co';
