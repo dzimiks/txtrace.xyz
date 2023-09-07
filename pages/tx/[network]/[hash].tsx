@@ -2,6 +2,7 @@ import axios from 'axios';
 import Head from 'next/head';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next/types';
 import { DateTime } from 'luxon';
+import { Icon } from '../../../components/Icon/Icon';
 
 export default function Page(props: Record<string, any>) {
   const {
@@ -97,6 +98,13 @@ export default function Page(props: Record<string, any>) {
       </Head>
       <h1>Tenderly Transaction</h1>
       <pre>{JSON.stringify(props, null, 2)}</pre>
+      <Icon icon="globe" />
+      <Icon icon="box" />
+      <Icon icon="arrow-right" />
+      <Icon icon="flame" />
+      <Icon icon="coins" />
+      <Icon icon="check" />
+      <Icon icon="x" />
     </div>
   );
 }
@@ -120,6 +128,18 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const TENDERLY_API_BASE_URL = 'https://api.tenderly.co';
   let data: Record<string, any>;
 
+  const tenderlyNetworks = await axios.get(
+    `${TENDERLY_API_BASE_URL}/api/v1/public-networks`,
+  );
+
+  if (!tenderlyNetworks?.data) {
+    throw new Error('No Tenderly-supported networks are provided.');
+  }
+
+  const networkIds: number[] = tenderlyNetworks.data.map((network: any) =>
+    Number(network.id),
+  );
+
   try {
     const response = await axios.get(
       // `${TENDERLY_API_BASE_URL}/api/v1/account/${accountName}/project/${projectName}/network/${network}/transaction/${txHash}`,
@@ -132,11 +152,24 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     );
 
-    console.log({ created_at: response.data.created_at, data: response.data });
+    console.log({
+      responseData: response.data,
+    });
+
+    // Check if the network is supported by Tenderly
+    if (!networkIds.includes(Number(response.data.call_trace.network_id))) {
+      throw new Error(
+        `Chain ID ${response.data.call_trace.network_id} is not supported by Tenderly.`,
+      );
+    }
+
+    const networkName = tenderlyNetworks.data
+      .find((network: any) => network.id === response.data.call_trace.network_id)?.name;
+
     data = {
-      errorMessage: response.data.error_message ?? '',
+      errorMessage: response.data.error_message ?? null,
       blockNumber: response.data.block_number,
-      networkId: response.data.call_trace.network_id || '1',
+      networkId: networkName ?? response.data.call_trace.network_id,
       gas: response.data.call_trace.gas,
       gasUsed: response.data.call_trace.gas_used,
       txHash: response.data.call_trace.hash,
@@ -146,9 +179,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       createdAt: formatDate(response.data.created_at),
     };
   } catch (error) {
-    console.error({ error: error.response?.data });
     data = {
-      errorMessage: error.response?.data?.error?.message ?? 'Error occurred',
+      errorMessage: error.response?.data?.error?.message ?? error ?? 'Error occurred',
     };
   }
 

@@ -1,0 +1,13 @@
+@keyframes SpinIconAnimation {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(359deg);
+  }
+}
+
+.Icon--SpinAnimation {
+  display: inline-block;
+  animation: 1s SpinIconAnimation linear infinite;
+}
