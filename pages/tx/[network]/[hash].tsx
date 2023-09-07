@@ -78,7 +78,7 @@ export default function Page(props: Record<string, any>) {
   useEffect(() => {
     if (!initialized.current) {
       initialized.current = true;
-      // window.open(`https://dashboard.tenderly.co/tx/${networkId}/${txHash}`, '_self');
+      window.open(`https://dashboard.tenderly.co/tx/${networkId}/${txHash}`, '_self');
     }
   }, []);
 
