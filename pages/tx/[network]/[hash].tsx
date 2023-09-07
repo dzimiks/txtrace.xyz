@@ -167,7 +167,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       .find((network: any) => network.id === response.data.call_trace.network_id)?.name;
 
     data = {
-      errorMessage: response.data.error_message ?? null,
+      errorMessage: response.data.call_trace?.error ?? null,
       blockNumber: response.data.block_number,
       networkId: networkName ?? response.data.call_trace.network_id,
       gas: response.data.call_trace.gas,
@@ -175,7 +175,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       txHash: response.data.call_trace.hash,
       from: response.data.call_trace.from,
       to: response.data.call_trace.to,
-      status: !!response.data.call_trace?.error ?? null,
+      status: !response.data.call_trace?.error,
       createdAt: formatDate(response.data.created_at),
     };
   } catch (error) {
