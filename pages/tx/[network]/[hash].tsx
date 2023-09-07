@@ -83,13 +83,13 @@ export default function Page(props: Record<string, any>) {
         {/* Primary Meta Tags */}
         <title>Tenderly Transaction</title>
         <meta name="title" content="Tenderly Transaction" />
-        <meta name="description" content={`Transaction details for the ${txHash}.`} />
+        <meta name="description" content={`Transaction details for the ${txHash} on ${networkName} network.`} />
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`https://www.txtrace.xyz/tx/${networkId}/${txHash}`} />
         <meta property="og:title" content="Tenderly Transaction" />
-        <meta property="og:description" content={`Transaction details for the ${txHash}.`} />
+        <meta property="og:description" content={`Transaction details for the ${txHash} on ${networkName} network.`} />
         <meta
           name="og:image"
           content={
@@ -102,7 +102,7 @@ export default function Page(props: Record<string, any>) {
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content={`https://www.txtrace.xyz/tx/${networkId}/${txHash}`} />
         <meta property="twitter:title" content="Tenderly Transaction" />
-        <meta property="twitter:description" content={`Transaction details for the ${txHash}.`} />
+        <meta property="twitter:description" content={`Transaction details for the ${txHash} on ${networkName} network.`} />
         <meta
           name="twitter:image"
           content={
