@@ -7,6 +7,7 @@ export * from './dialog';
 export * from './input';
 export * from './popover';
 export * from './select';
+export * from './table';
 export * from './toast';
 export * from './toaster';
 export * from './tooltip';

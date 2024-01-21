@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { LoaderIcon, SearchIcon } from 'lucide-react';
-import { Badge, Button, Input } from '@/ui/index';
+import { ArrowUpRightIcon, LoaderIcon, SearchIcon, XIcon } from 'lucide-react';
+import { Badge, Button, Input, Table, TableBody, TableCell, TableRow } from '@/ui/index';
 import { Network } from '@/types/network';
 import {
   fetchTenderlyNetworks,
@@ -12,8 +12,13 @@ import {
 import axios from 'axios';
 import { TENDERLY_API_BASE_URL, Theme } from '@/common/constants';
 import { formatDate } from '@/utils/date';
-import { getQueryParams } from '@/utils/string';
+import { excerpt, generateShortAddress, getQueryParams } from '@/utils/string';
 import { NetworkSelect } from '@/components/NetworkSelect';
+import { CheckIcon } from '@/components/Icons';
+import { formatAmount, parseEthValue } from '@/utils/number';
+
+const failedText = 'flex items-center text-[#E5484D]';
+const successText = 'flex items-center text-[#30A46C]';
 
 const predefinedSearches = [
   {
@@ -29,9 +34,9 @@ const predefinedSearches = [
     className: 'border-transparent bg-sky-500 text-primary-foreground hover:bg-sky-500/80',
   },
   {
-    name: 'Avalanche Fail',
+    name: 'Failed Avalanche Tx',
     network: '43114',
-    txHash: '0x0a41073661facdb9051a52ece0b7ec25bfa6e795a24105571979a4b6035546b4',
+    txHash: '0xe1093a44ba28667d54b0e4d30ee0a54a5a54ad72cc5e9b36f447e23e58393720',
     className:
       'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80',
   },
@@ -41,6 +46,7 @@ const LandingPage = () => {
   const [tenderlyNetworks, setTenderlyNetworks] = useState<Network[]>([]);
   const [theme, setTheme] = useState<string>(Theme.DARK);
   const [loading, setLoading] = useState<boolean>(false);
+  const [txData, setTxData] = useState<Record<string, any>>(null);
   const [network, setNetwork] = useState<string>('1');
   const [imageUrl, setImageUrl] = useState<string>(
     'https://dashboard.tenderly.co/Assets/og_image.jpg',
@@ -121,6 +127,7 @@ const LandingPage = () => {
 
     const queryParams = getQueryParams(data);
     setImageUrl(`https://www.txtrace.xyz/api/tx?${queryParams}`);
+    setTxData(data);
     setLoading(false);
   };
 
@@ -180,24 +187,152 @@ const LandingPage = () => {
             </div>
           </div>
         </div>
-        <div className="w-full max-w-2xl">
-          <Link
-            href={
-              txHash
-                ? `https://dashboard.tenderly.co/tx/${findTenderlyNetworkById(network, tenderlyNetworks)?.name}/${txHash}`
-                : '#'
-            }
-          >
-            <div className="border rounded-md overflow-hidden hover:opacity-90">
-              <img className="w-full" src={loading ? '/og.png' : imageUrl} alt="Tenderly" />
-              <div className="flex flex-col gap-2 p-4">
-                <h3 className="font-semibold">Transaction Trace</h3>
-                <p className="break-words text-sm">
-                  {`Transaction overview for the ${txHash || 'tx hash'} on ${findTenderlyNetworkById(network, tenderlyNetworks)?.name} network. See full details on Tenderly Dashboard.`}
-                </p>
-              </div>
+        <div className="grid grid-cols-auto-fill-full gap-6 w-full max-w-7xl mx-auto md:grid-cols-2">
+          <div className="flex flex-col gap-4 rounded-md p-4 border">
+            <div className="flex flex-col gap-2 justify-between">
+              <h3 className="font-semibold text-xl">Transaction Overview</h3>
+              {txData?.networkId && (
+                <Link
+                  className="link-text-no-underline text-sm flex items-center gap-1"
+                  href={`https://dashboard.tenderly.co/tx/${txData.networkId}/${txData.txHash}`}
+                >
+                  <span>See full trace in Tenderly Dashboard</span>
+                  <ArrowUpRightIcon size={14} />
+                </Link>
+              )}
             </div>
-          </Link>
+            <Table className="border rounded-md">
+              <TableBody className="font-semibold">
+                {!txData && (
+                  <TableRow>
+                    <TableCell>Data will be shown here</TableCell>
+                  </TableRow>
+                )}
+                {txData && !txData?.error && (
+                  <>
+                    <TableRow>
+                      <TableCell>Blockchain</TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex items-center gap-1 justify-end">
+                          <img
+                            className="w-6 h-6 border border-[#ADA9A9] rounded-full bg-white"
+                            src={txData?.networkUrl}
+                            alt={txData?.networkName}
+                          />
+                          <span>{txData?.networkName}</span>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Transaction Hash</TableCell>
+                      <TableCell className="text-right">
+                        {generateShortAddress(txData?.txHash, 10, 10)}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Status</TableCell>
+                      <TableCell className="text-right">
+                        {!txData?.status && (
+                          <div className={`${failedText} justify-end`}>
+                            <XIcon />
+                            <span className="ml-1">Failed</span>
+                          </div>
+                        )}
+                        {txData?.status && (
+                          <div className={`${successText} justify-end`}>
+                            <CheckIcon />
+                            <span className="ml-1">Success</span>
+                          </div>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                    {txData?.errorMessage && (
+                      <TableRow>
+                        <TableCell>Error Message</TableCell>
+                        <TableCell className="text-right">
+                          <span className={`${failedText} justify-end`}>
+                            {txData?.errorMessage}
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                    <TableRow>
+                      <TableCell>Block</TableCell>
+                      <TableCell className="text-right">
+                        {formatAmount(txData?.blockNumber, 0)}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Timestamp</TableCell>
+                      <TableCell className="text-right">{txData?.createdAt}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>From</TableCell>
+                      <TableCell className="text-right">
+                        {generateShortAddress(txData?.from, 10, 10)}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>To</TableCell>
+                      <TableCell className="text-right">
+                        {generateShortAddress(txData?.to, 10, 10)}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Gas</TableCell>
+                      <TableCell className="text-right">{formatAmount(txData?.gas, 0)}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Gas Price</TableCell>
+                      <TableCell className="text-right">
+                        {parseEthValue(txData?.gasPrice).value}{' '}
+                        {parseEthValue(txData?.gasPrice).unit}
+                      </TableCell>
+                    </TableRow>
+                    {txData?.functionName && (
+                      <TableRow>
+                        <TableCell>Method Name</TableCell>
+                        <TableCell className="text-right">
+                          {excerpt(txData?.functionName, 20)}()
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+          <div className="flex flex-col gap-4 rounded-md p-4 border">
+            <div className="flex flex-col gap-2 justify-between">
+              <h3 className="font-semibold text-xl">OG Image</h3>
+              {txData?.networkId && (
+                <Link
+                  className="link-text-no-underline text-sm flex items-center gap-1"
+                  href={`https://tdly.co/tx/${txData.networkId}/${txData.txHash}`}
+                >
+                  <span>{`https://tdly.co/tx/${txData.networkId}/${generateShortAddress(txData.txHash, 10, 10)}`}</span>
+                  <ArrowUpRightIcon size={14} />
+                </Link>
+              )}
+            </div>
+            <Link
+              href={
+                txHash
+                  ? `https://dashboard.tenderly.co/tx/${findTenderlyNetworkById(network, tenderlyNetworks)?.name}/${txHash}`
+                  : '#'
+              }
+            >
+              <div className="border rounded-md overflow-hidden hover:opacity-90">
+                <img className="w-full" src={loading ? '/og.png' : imageUrl} alt="Tenderly" />
+                <div className="flex flex-col gap-2 p-4">
+                  <h3 className="font-semibold">Transaction Trace</h3>
+                  <p className="break-words text-sm">
+                    {`Transaction overview for the ${txHash || 'tx hash'} on ${findTenderlyNetworkById(network, tenderlyNetworks)?.name} network. See full details on Tenderly Dashboard.`}
+                  </p>
+                </div>
+              </div>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
