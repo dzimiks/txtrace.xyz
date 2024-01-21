@@ -103,8 +103,7 @@ const LandingPage = () => {
     }
 
     const queryParams = getQueryParams(data);
-    // setImageUrl(`https://www.tdly.co/api/tx?${queryParams}`);
-    setImageUrl(`http://localhost:3000/api/tx?${queryParams}`);
+    setImageUrl(`https://www.tdly.co/api/tx?${queryParams}`);
     setTxData(data);
     setLoading(false);
   };
