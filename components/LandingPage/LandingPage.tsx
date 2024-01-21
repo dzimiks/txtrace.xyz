@@ -22,7 +22,6 @@ const LandingPage = () => {
   const [theme, setTheme] = useState<string>(Theme.DARK);
   const [loading, setLoading] = useState<boolean>(false);
   const [network, setNetwork] = useState<string>('1');
-  const [txData, setTxData] = useState<Record<string, any>>({});
   const [imageUrl, setImageUrl] = useState<string>(
     'https://dashboard.tenderly.co/Assets/og_image.jpg',
   );
@@ -103,8 +102,7 @@ const LandingPage = () => {
     }
 
     const queryParams = getQueryParams(data);
-    setImageUrl(`https://www.tdly.co/api/tx?${queryParams}`);
-    setTxData(data);
+    setImageUrl(`https://www.txtrace.xyz/api/tx?${queryParams}`);
     setLoading(false);
   };
 

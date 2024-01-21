@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://www.txtrace.xyz
+
+# Sitemaps
+Sitemap: https://www.txtrace.xyz/sitemap.xml
