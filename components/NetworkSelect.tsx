@@ -5,7 +5,8 @@ import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput, CommandItem,
+  CommandInput,
+  CommandItem,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -32,8 +33,13 @@ const NetworkSelect = ({ networks, setSelectedNetwork }) => {
           className="w-full justify-between md:w-[250px]"
         >
           <div className="flex items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap">
-            {selectedNetwork?.name &&
-              <img className="w-6 h-6 rounded-full" src={selectedNetwork.logo} alt={selectedNetwork.name} />}
+            {selectedNetwork?.name && (
+              <img
+                className="w-6 h-6 rounded-full"
+                src={selectedNetwork.logo}
+                alt={selectedNetwork.name}
+              />
+            )}
             <span>{selectedNetwork?.name || 'Select network...'}</span>
           </div>
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -54,7 +60,11 @@ const NetworkSelect = ({ networks, setSelectedNetwork }) => {
                     setOpen(false);
                   }}
                 >
-                  <img className="w-6 h-6 rounded-full mr-2" src={network.logo} alt={network.name} />
+                  <img
+                    className="w-6 h-6 rounded-full mr-2"
+                    src={network.logo}
+                    alt={network.name}
+                  />
                   <span className="font-semibold">{network.name}</span>
                 </CommandItem>
               ))}

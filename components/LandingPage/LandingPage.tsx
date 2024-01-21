@@ -1,10 +1,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { LoaderIcon, SearchIcon } from 'lucide-react';
-import {
-  Button,
-  Input,
-} from '@/ui/index';
+import { Button, Input } from '@/ui/index';
 import { Network } from '@/types/network';
 import {
   fetchTenderlyNetworks,
@@ -26,7 +23,9 @@ const LandingPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [network, setNetwork] = useState<string>('1');
   const [txData, setTxData] = useState<Record<string, any>>({});
-  const [imageUrl, setImageUrl] = useState<string>('https://dashboard.tenderly.co/Assets/og_image.jpg');
+  const [imageUrl, setImageUrl] = useState<string>(
+    'https://dashboard.tenderly.co/Assets/og_image.jpg',
+  );
   const [txHash, setTxHash] = useState<string>('');
 
   useEffect(() => {
@@ -115,21 +114,19 @@ const LandingPage = () => {
       <div className="flex flex-col items-center justify-center gap-12 py-16">
         <h1 className="text-2xl font-bold text-center text-black sm:text-5xl">
           Get trace for any <br />
-          <span
-            className="bg-gradient-to-r from-red-500 to-purple-500 bg-clip-text text-transparent">Transaction Hash</span>
+          <span className="bg-gradient-to-r from-red-500 to-purple-500 bg-clip-text text-transparent">
+            Transaction Hash
+          </span>
         </h1>
         <div className="flex flex-col gap-2 w-full max-w-4xl md:items-center md:flex-row">
-          <NetworkSelect
-            networks={tenderlyNetworks}
-            setSelectedNetwork={setNetwork}
-          />
+          <NetworkSelect networks={tenderlyNetworks} setSelectedNetwork={setNetwork} />
           <div className="flex items-center relative w-full">
             <Input
               className="peer block w-full rounded-md border border-gray-200 bg-white p-4 pr-24 shadow-lg"
               placeholder="Search transaction hash..."
               type="text"
               value={txHash}
-              onChange={(e) => setTxHash(e.target.value)}
+              onChange={e => setTxHash(e.target.value)}
             />
             <Button
               className="absolute flex items-center right-0 h-8 my-1.5 mr-1"
@@ -147,13 +144,14 @@ const LandingPage = () => {
         </div>
         <div className="w-full max-w-2xl">
           <Link
-            href={txHash ? `https://dashboard.tenderly.co/tx/${findTenderlyNetworkById(network, tenderlyNetworks)?.name}/${txHash}` : '#'}>
+            href={
+              txHash
+                ? `https://dashboard.tenderly.co/tx/${findTenderlyNetworkById(network, tenderlyNetworks)?.name}/${txHash}`
+                : '#'
+            }
+          >
             <div className="border rounded-md overflow-hidden hover:opacity-90">
-              <img
-                className="w-full"
-                src={imageUrl}
-                alt="Tenderly"
-              />
+              <img className="w-full" src={imageUrl} alt="Tenderly" />
               <div className="flex flex-col gap-2 p-4">
                 <h3 className="font-semibold">Transaction Trace</h3>
                 <p className="break-words text-sm">
