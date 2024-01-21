@@ -16,6 +16,7 @@ type NetworkResponseData = {
   id: string;
   metadata: NetworkMetadataResponseData;
   chain_config: string;
+  sort_order: number;
   name: string;
 };
 
@@ -30,6 +31,7 @@ interface NetworkData {
   shortName: string;
   explorerBaseUrl: string;
   nativeCurrency: string;
+  sortOrder: number;
   excluded: boolean;
   chainConfig: Record<string, string>;
 }
@@ -45,6 +47,7 @@ class Network implements NetworkData {
   shortName: string;
   explorerBaseUrl: string;
   nativeCurrency: string;
+  sortOrder: number;
   excluded: boolean;
   chainConfig: Record<string, string>;
 
@@ -59,6 +62,7 @@ class Network implements NetworkData {
     this.shortName = data.shortName;
     this.explorerBaseUrl = data.explorerBaseUrl;
     this.nativeCurrency = data.nativeCurrency;
+    this.sortOrder = data.sortOrder;
     this.excluded = data.excluded;
     this.chainConfig = data.chainConfig;
   }
@@ -84,6 +88,7 @@ class Network implements NetworkData {
       excluded: !!response?.metadata?.exclude_from_listing,
       explorerBaseUrl: response?.metadata?.explorer_base_url,
       nativeCurrency: response?.metadata?.native_currency ?? '',
+      sortOrder: response?.sort_order,
       chainConfig,
     });
   }

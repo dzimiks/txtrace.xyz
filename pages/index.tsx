@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { LandingPage } from '@/components/index';
 
-const TITLE = 'Get trace for any Transaction Hash';
+const TITLE = 'Get Trace for any Transaction Hash | txtrace.xyz';
 const DESCRIPTION = 'Get a transaction trace in one click. More than 35 networks supported.';
 const WEBSITE_URL = 'https://www.txtrace.xyz';
 const OG_IMAGE_URL = 'https://www.txtrace.xyz/og.png';
