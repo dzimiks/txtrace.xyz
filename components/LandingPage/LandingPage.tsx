@@ -32,7 +32,8 @@ const predefinedSearches = [
     name: 'Avalanche Fail',
     network: '43114',
     txHash: '0x0a41073661facdb9051a52ece0b7ec25bfa6e795a24105571979a4b6035546b4',
-    className: 'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80',
+    className:
+      'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80',
   },
 ];
 
@@ -141,11 +142,7 @@ const LandingPage = () => {
         </h1>
         <div className="flex flex-col gap-4 w-full max-w-4xl">
           <div className="flex flex-col gap-2 md:items-center md:flex-row">
-            <NetworkSelect
-              options={tenderlyNetworks}
-              network={network}
-              setNetwork={setNetwork}
-            />
+            <NetworkSelect options={tenderlyNetworks} network={network} setNetwork={setNetwork} />
             <div className="flex items-center relative w-full">
               <Input
                 className="peer block w-full rounded-md border border-gray-200 bg-white p-4 pr-24 shadow-lg"
@@ -169,9 +166,7 @@ const LandingPage = () => {
             </div>
           </div>
           <div className="flex gap-2 flex-wrap border px-2 py-1 rounded-md mx-auto">
-            <div className="text-sm font-semibold">
-              Choose from predefined searches:
-            </div>
+            <div className="text-sm font-semibold">Choose from predefined searches:</div>
             <div className="flex gap-1 flex-wrap">
               {predefinedSearches.map(item => (
                 <Badge
