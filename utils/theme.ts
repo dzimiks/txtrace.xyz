@@ -66,9 +66,6 @@ const getBottomBannerBackgroundCSS = (theme: Theme | string, title: string): str
     case 'Wallet':
       style = 'bg-[#30A46C] text-white';
       break;
-    // case 'Simulated Fork Transaction':
-    //   style = 'bg-indigo-500';
-    //   break;
     default:
       style = 'bg-[#6E56CF] text-white';
       break;

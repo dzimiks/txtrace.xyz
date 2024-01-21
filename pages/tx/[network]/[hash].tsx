@@ -2,97 +2,79 @@ import axios from 'axios';
 import Head from 'next/head';
 import { useEffect, useRef } from 'react';
 import { GetServerSidePropsContext } from 'next/types';
-import { formatDate } from '../../../utils/date';
-import { getTxQueryParams } from '../../../utils/tenderly';
+import { formatDate } from '@/utils/date';
+import {
+  fetchTenderlyNetworks,
+  findTenderlyNetworkById,
+  getNetworkForRouteSlug,
+  isNetworkSupportedByTenderly,
+} from '@/utils/tenderly';
+import { getQueryParams } from '@/utils/string';
+import { TENDERLY_API_BASE_URL, Theme } from '@/common/constants';
+import { Network } from '@/types/network';
 
 export default function Page(props: Record<string, any>) {
   const initialized = useRef(false);
 
   const { networkId, networkName, txHash } = props;
 
-  const queryParams = getTxQueryParams(props);
+  const queryParams = getQueryParams(props);
 
   useEffect(() => {
     if (!initialized.current) {
       initialized.current = true;
-      window.open(`https://dashboard.tenderly.co/tx/${networkId}/${txHash}`, '_self');
+      window.location.href = `https://dashboard.tenderly.co/tx/${networkId}/${txHash}`;
     }
-  }, []);
+  }, [networkId, txHash]);
 
   return (
     <div>
       <Head>
         {/* Primary Meta Tags */}
-        <title>Tenderly Transaction</title>
-        <meta name="title" content="Tenderly Transaction" />
+        <title>Transaction | Tenderly</title>
+        <meta name="title" content="Transaction | Tenderly" />
         <meta
           name="description"
-          content={`Transaction details for the ${txHash} on ${networkName} network.`}
+          content={`Transaction overview for the ${txHash} on ${networkName} network. See full details on Tenderly Dashboard.`}
         />
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={`https://www.txtrace.xyz/tx/${networkId}/${txHash}`} />
-        <meta property="og:title" content="Tenderly Transaction" />
+        <meta property="og:url" content={`https://www.tdly.co/tx/${networkId}/${txHash}`} />
+        <meta property="og:title" content="Transaction | Tenderly" />
         <meta
           property="og:description"
-          content={`Transaction details for the ${txHash} on ${networkName} network.`}
+          content={`Transaction overview for the ${txHash} on ${networkName} network. See full details on Tenderly Dashboard.`}
         />
-        <meta
-          name="og:image"
-          content={`${
-            process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : ''
-          }/api/tx?${queryParams}`}
-        />
+        <meta name="og:image" content={`https://www.tdly.co/api/tx?${queryParams}`} />
 
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
-        <meta
-          property="twitter:url"
-          content={`https://www.txtrace.xyz/tx/${networkId}/${txHash}`}
-        />
-        <meta property="twitter:title" content="Tenderly Transaction" />
+        <meta property="twitter:url" content={`https://www.tdly.co/tx/${networkId}/${txHash}`} />
+        <meta property="twitter:title" content="Transaction | Tenderly" />
         <meta
           property="twitter:description"
-          content={`Transaction details for the ${txHash} on ${networkName} network.`}
+          content={`Transaction overview for the ${txHash} on ${networkName} network. See full details on Tenderly Dashboard.`}
         />
-        <meta
-          name="twitter:image"
-          content={`${
-            process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : ''
-          }/api/tx?${queryParams}`}
-        />
+        <meta name="twitter:image" content={`https://www.tdly.co/api/tx?${queryParams}`} />
       </Head>
-      <h1>Tenderly Transaction</h1>
-      <pre>{JSON.stringify(props, null, 2)}</pre>
     </div>
   );
 }
 
-// /tx/1/0x849dc9d371da5060defcdd4d4df36202ea8e4ebfb29bc061d718ad8dd5d15e32 - failed
-// /tx/1/0xb1db15f95ff8939fea97bba2782a1c7b2f4d0dc7d67097fdb9648d9fb7766870 - success
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  // const accountName: string = process.env.TENDERLY_ACCOUNT;
-  // const projectName: string = process.env.TENDERLY_PROJECT;
   const network = context.params.network || '1';
   const txHash = context.params.hash || '0x';
+  const theme = context.query.theme || Theme.DARK;
 
-  const TENDERLY_API_BASE_URL = 'https://api.tenderly.co';
   let data: Record<string, any>;
 
-  const tenderlyNetworks = await axios.get(`${TENDERLY_API_BASE_URL}/api/v1/public-networks`);
-
-  if (!tenderlyNetworks?.data) {
-    throw new Error('No Tenderly-supported networks are provided.');
-  }
-
-  const networkIds: number[] = tenderlyNetworks.data.map((network: any) => Number(network.id));
-
   try {
+    const tenderlyNetworks: Network[] = await fetchTenderlyNetworks();
+    const networkType: string = getNetworkForRouteSlug(network as string, tenderlyNetworks);
+
     const response = await axios.get(
-      // `${TENDERLY_API_BASE_URL}/api/v1/account/${accountName}/project/${projectName}/network/${network}/transaction/${txHash}`,
-      // `${TENDERLY_API_BASE_URL}/api/v1/public-contract/${network}/trace/${txHash}`,
-      `${TENDERLY_API_BASE_URL}/api/v1/public-contract/${network}/tx/${txHash}`,
+      `${TENDERLY_API_BASE_URL}/api/v1/public-contract/${networkType}/tx/${txHash}`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -101,37 +83,53 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     );
 
-    console.log({
-      responseData: response.data,
-    });
+    const responseNetworkId: string = response.data.network_id;
 
     // Check if the network is supported by Tenderly
-    if (!networkIds.includes(Number(response.data.network_id))) {
-      throw new Error(`Chain ID ${response.data.network_id} is not supported by Tenderly.`);
+    if (!isNetworkSupportedByTenderly(responseNetworkId, tenderlyNetworks)) {
+      throw new Error(`Chain ID ${responseNetworkId} is not supported by Tenderly.`);
     }
 
-    const tenderlyNetwork = tenderlyNetworks.data.find(
-      (network: any) => network.id === response.data.network_id,
+    const traceResponse = await axios.get(
+      `${TENDERLY_API_BASE_URL}/api/v1/public-contract/${networkType}/trace/${txHash}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Access-Key': process.env.TENDERLY_ACCESS_TOKEN,
+        },
+      },
     );
+
+    const tenderlyNetwork: Network = findTenderlyNetworkById(responseNetworkId, tenderlyNetworks);
+    const functionName: string = traceResponse.data?.call_trace?.function_name ?? null;
+    const toContract: string = traceResponse.data?.call_trace?.contract_name;
 
     data = {
       errorMessage: response.data.error_message ?? null,
+      toContractName: toContract ?? null,
       blockNumber: response.data.block_number,
       networkId: response.data.network_id,
       networkName: tenderlyNetwork?.name ?? null,
-      networkUrl: tenderlyNetwork?.metadata?.icon ?? null,
+      networkUrl: tenderlyNetwork?.logo ?? null,
       gas: response.data.gas,
-      gasUsed: response.data.gas_used,
       gasPrice: response.data.gas_price,
-      txHash: response.data.hash,
+      txHash,
       from: response.data.from,
       to: response.data.to,
       status: response.data.status,
       createdAt: formatDate(response.data.timestamp),
+      title: 'Transaction',
+      functionName,
+      theme,
     };
   } catch (error) {
     data = {
-      errorMessage: error.response?.data?.error?.message ?? error ?? 'Error occurred',
+      error:
+        error.response?.data?.error?.message ??
+        error ??
+        'Transaction hash is invalid. Please check the hash and try again.',
+      txHash,
+      networkName: network,
     };
   }
 

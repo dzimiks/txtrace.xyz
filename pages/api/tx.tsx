@@ -2,7 +2,6 @@ import { ImageResponse } from '@vercel/og';
 import { NextRequest } from 'next/server';
 import { formatAmount, parseEthValue } from '@/utils/number';
 import { excerpt, extractQueryParams, generateShortAddress } from '@/utils/string';
-import { getBottomBannerText } from '@/utils/tenderly';
 import {
   DarkBoxStyle,
   DarkTextStyle,
@@ -86,7 +85,7 @@ export default async function handler(req: NextRequest) {
   ]);
   const boxStyle: string = isLightTheme(theme) ? LightBoxStyle : DarkBoxStyle;
   const textStyle: string = isLightTheme(theme) ? LightTextStyle : DarkTextStyle;
-  const bottomBannerText: string = getBottomBannerText(title);
+  const bottomBannerText: string = 'TRANSACTION';
   const bottomBannerStyle: string = getBottomBannerBackgroundCSS(theme, title);
   const failedText: string = 'flex items-center text-[#E5484D]';
   const failedBox =

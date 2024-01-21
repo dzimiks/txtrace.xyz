@@ -1,11 +1,5 @@
 import axios from 'axios';
-import {
-  ContractTitle,
-  ContractType,
-  TENDERLY_API_BASE_URL,
-  TransactionTitle,
-  WalletTitle,
-} from '@/common/constants';
+import { TENDERLY_API_BASE_URL } from '@/common/constants';
 import { Network, NetworkResponseData } from '@/types/network';
 
 /**
@@ -77,73 +71,9 @@ const getNetworkForRouteSlug = (route: string, networks: Network[]): string | nu
   return network?.id ?? route;
 };
 
-/**
- * Returns the appropriate transaction title based on the input text.
- *
- * @param {string} text - The input text to determine the transaction title.
- * @returns {string} The corresponding transaction title.
- *
- * @example
- * getBottomBannerText('Simulated Transaction');
- * // returns TransactionTitle.SIMULATED_TRANSACTION
- */
-const getBottomBannerText = (text: string): string => {
-  if (!text) {
-    return TransactionTitle.TRANSACTION;
-  }
-
-  switch (text) {
-    case 'Transaction':
-      return TransactionTitle.TRANSACTION;
-    case 'Simulated Transaction':
-      return TransactionTitle.SIMULATED_TRANSACTION;
-    case 'Simulated Fork Transaction':
-      return TransactionTitle.SIMULATED_FORK_TRANSACTION;
-    case 'Contract':
-      return ContractTitle.CONTRACT;
-    case 'Wallet':
-      return WalletTitle.WALLET;
-    default:
-      return TransactionTitle.TRANSACTION;
-  }
-};
-
-/**
- * Determines the type of a contract.
- *
- * @function
- * @param {Record<string, any>} contract - The contract to evaluate.
- * @returns {{ name: string; type: ContractType }} - An object containing the name and type of the contract.
- *
- * @example
- * const contractType = getContractType(contract);
- */
-const getContractType = (contract: Record<string, any>): { name: string; type: ContractType } => {
-  if (contract.child_contracts) {
-    return {
-      type: ContractType.PROXY,
-      name: 'Proxy Contract',
-    };
-  }
-
-  if (contract.fork_id) {
-    return {
-      type: ContractType.FORK,
-      name: 'Fork Contract',
-    };
-  }
-
-  return {
-    type: ContractType.REGULAR,
-    name: null,
-  };
-};
-
 export {
   fetchTenderlyNetworks,
   isNetworkSupportedByTenderly,
   findTenderlyNetworkById,
   getNetworkForRouteSlug,
-  getBottomBannerText,
-  getContractType,
 };
