@@ -10,7 +10,14 @@ const GWEI_VALUE = new BigNumber(10).pow(9);
 
 const ETH_VALUE = new BigNumber(10).pow(18);
 
-const parseEthValue = (value: string, currency?: string) => {
+/**
+ * Parses an Ethereum value and determines its unit (Wei, Gwei, or ETH).
+ *
+ * @param {string} value - The Ethereum value to parse.
+ * @param {string} [currency] - Optional currency label (default is "Wei").
+ * @returns {Object} An object with the parsed value, its unit, and its value in Wei.
+ */
+const parseEthValue = (value: string, currency?: string): Record<string, any> => {
   if (!value || value === '0x') {
     return {
       value: 0,
@@ -43,11 +50,19 @@ const parseEthValue = (value: string, currency?: string) => {
   };
 };
 
+/**
+ * Formats a number with specified decimals and formatting options.
+ *
+ * @param {string | number} num - The number to format.
+ * @param {number} [decimal=2] - The number of decimal places.
+ * @param {BigNumber.Format} [opt={}] - Optional BigNumber formatting options.
+ * @returns {string} The formatted number.
+ */
 const formatNumber = (
   num: string | number,
-  decimal = 2,
-  opt = {} as BigNumber.Format,
-) => {
+  decimal: number = 2,
+  opt: BigNumber.Format = {} as BigNumber.Format,
+): string => {
   const n = new BigNumber(num);
   const format = {
     prefix: '',
@@ -72,7 +87,13 @@ const formatNumber = (
   return n.toFormat(decimal, format);
 };
 
-const formatUsdValue = (value: string) => {
+/**
+ * Formats a USD value with a dollar sign.
+ *
+ * @param {string} value - The value to format in USD.
+ * @returns {string} The formatted USD value.
+ */
+const formatUsdValue = (value: string): string => {
   const bnValue = new BigNumber(value);
 
   if (bnValue.lt(0)) {
@@ -86,7 +107,14 @@ const formatUsdValue = (value: string) => {
   return '<$0.01';
 };
 
-const formatAmount = (amount: string, decimals = 4) => {
+/**
+ * Formats an amount, adjusting the format based on the size of the amount.
+ *
+ * @param {string} amount - The amount to format.
+ * @param {number} [decimals=4] - The number of decimal places.
+ * @returns {string} The formatted amount.
+ */
+const formatAmount = (amount: string, decimals: number = 4): string => {
   const bnValue = new BigNumber(amount);
 
   if (bnValue.gt(1e9)) {

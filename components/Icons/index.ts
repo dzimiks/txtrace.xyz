@@ -1,0 +1,12 @@
+export { ArrowRightIcon } from './ArrowRightIcon';
+export { BoxIcon } from './BoxIcon';
+export { CheckIcon } from './CheckIcon';
+export { CoinsIcon } from './CoinsIcon';
+export { FlameIcon } from './FlameIcon';
+export { FunctionSquareIcon } from './FunctionSquareIcon';
+export { GlobeIcon } from './GlobeIcon';
+export { HistoryIcon } from './HistoryIcon';
+export { LanguagesIcon } from './LanguagesIcon';
+export { LockIcon } from './LockIcon';
+export { ProxyContractIcon } from './ProxyContractIcon';
+export { XIcon } from './XIcon';

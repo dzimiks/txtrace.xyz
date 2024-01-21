@@ -1,14 +1,35 @@
 import Head from 'next/head';
+import { LandingPage } from '@/components/index';
+
+const TITLE = 'Transaction Trace by Tenderly.co';
+const DESCRIPTION = 'Get a transaction trace in one click. More than 35 networks supported.';
+const WEBSITE_URL = 'https://www.txtrace.xyz';
+const OG_IMAGE_URL = 'https://www.txtrace.xyz/og.png';
 
 export default function Page() {
   return (
     <div>
       <Head>
-        <meta name="og:title" content="Transaction Trace by Tenderly.co" />
-        <meta name="og:description"
-              content="Get transaction trace in one click. More than 30 EVM-based networks supported." />
+        {/* Primary Meta Tags */}
+        <title>{TITLE}</title>
+        <meta name="title" content={TITLE} />
+        <meta name="description" content={DESCRIPTION} />
+
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={WEBSITE_URL} />
+        <meta property="og:title" content={TITLE} />
+        <meta property="og:description" content={DESCRIPTION} />
+        <meta name="og:image" content={OG_IMAGE_URL} />
+
+        {/* Twitter */}
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content={WEBSITE_URL} />
+        <meta property="twitter:title" content={TITLE} />
+        <meta property="twitter:description" content={DESCRIPTION} />
+        <meta name="twitter:image" content={OG_IMAGE_URL} />
       </Head>
-      <h1>Tenderly Transaction Trace</h1>
+      <LandingPage />
     </div>
   );
 }

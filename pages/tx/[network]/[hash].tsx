@@ -8,11 +8,7 @@ import { getTxQueryParams } from '../../../utils/tenderly';
 export default function Page(props: Record<string, any>) {
   const initialized = useRef(false);
 
-  const {
-    networkId,
-    networkName,
-    txHash,
-  } = props;
+  const { networkId, networkName, txHash } = props;
 
   const queryParams = getTxQueryParams(props);
 
@@ -29,33 +25,42 @@ export default function Page(props: Record<string, any>) {
         {/* Primary Meta Tags */}
         <title>Tenderly Transaction</title>
         <meta name="title" content="Tenderly Transaction" />
-        <meta name="description" content={`Transaction details for the ${txHash} on ${networkName} network.`} />
+        <meta
+          name="description"
+          content={`Transaction details for the ${txHash} on ${networkName} network.`}
+        />
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`https://www.txtrace.xyz/tx/${networkId}/${txHash}`} />
         <meta property="og:title" content="Tenderly Transaction" />
-        <meta property="og:description" content={`Transaction details for the ${txHash} on ${networkName} network.`} />
+        <meta
+          property="og:description"
+          content={`Transaction details for the ${txHash} on ${networkName} network.`}
+        />
         <meta
           name="og:image"
-          content={
-            `${
-              process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : ''
-            }/api/tx?${queryParams}`}
+          content={`${
+            process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : ''
+          }/api/tx?${queryParams}`}
         />
 
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content={`https://www.txtrace.xyz/tx/${networkId}/${txHash}`} />
+        <meta
+          property="twitter:url"
+          content={`https://www.txtrace.xyz/tx/${networkId}/${txHash}`}
+        />
         <meta property="twitter:title" content="Tenderly Transaction" />
-        <meta property="twitter:description"
-              content={`Transaction details for the ${txHash} on ${networkName} network.`} />
+        <meta
+          property="twitter:description"
+          content={`Transaction details for the ${txHash} on ${networkName} network.`}
+        />
         <meta
           name="twitter:image"
-          content={
-            `${
-              process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : ''
-            }/api/tx?${queryParams}`}
+          content={`${
+            process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : ''
+          }/api/tx?${queryParams}`}
         />
       </Head>
       <h1>Tenderly Transaction</h1>
@@ -75,17 +80,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const TENDERLY_API_BASE_URL = 'https://api.tenderly.co';
   let data: Record<string, any>;
 
-  const tenderlyNetworks = await axios.get(
-    `${TENDERLY_API_BASE_URL}/api/v1/public-networks`,
-  );
+  const tenderlyNetworks = await axios.get(`${TENDERLY_API_BASE_URL}/api/v1/public-networks`);
 
   if (!tenderlyNetworks?.data) {
     throw new Error('No Tenderly-supported networks are provided.');
   }
 
-  const networkIds: number[] = tenderlyNetworks.data.map((network: any) =>
-    Number(network.id),
-  );
+  const networkIds: number[] = tenderlyNetworks.data.map((network: any) => Number(network.id));
 
   try {
     const response = await axios.get(
@@ -106,13 +107,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     // Check if the network is supported by Tenderly
     if (!networkIds.includes(Number(response.data.network_id))) {
-      throw new Error(
-        `Chain ID ${response.data.network_id} is not supported by Tenderly.`,
-      );
+      throw new Error(`Chain ID ${response.data.network_id} is not supported by Tenderly.`);
     }
 
-    const tenderlyNetwork = tenderlyNetworks.data
-      .find((network: any) => network.id === response.data.network_id);
+    const tenderlyNetwork = tenderlyNetworks.data.find(
+      (network: any) => network.id === response.data.network_id,
+    );
 
     data = {
       errorMessage: response.data.error_message ?? null,

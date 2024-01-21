@@ -1,5 +1,6 @@
 {
   "name": "txtrace",
+  "description": "Custom Open Graph image displaying information about transaction on 35+ networks supported by Tenderly.",
   "repository": "https://github.com/dzimiks/txtrace.xyz",
   "license": "MIT",
   "private": true,
@@ -7,27 +8,30 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format:write": "prettier --write \"**/*.{css,js,json,jsx,ts,tsx}\"",
+    "format": "prettier \"**/*.{css,js,json,jsx,ts,tsx}\""
   },
   "dependencies": {
-    "@vercel/og": "latest",
-    "axios": "^1.4.0",
+    "@vercel/og": "^0.6.2",
+    "axios": "^1.6.5",
     "bignumber.js": "^9.1.2",
-    "classnames": "^2.3.2",
-    "lucide-react": "^0.274.0",
-    "luxon": "^3.4.3",
-    "next": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "sass": "^1.66.1"
+    "classnames": "^2.5.1",
+    "lucide-react": "^0.312.0",
+    "luxon": "^3.4.4",
+    "next": "^14.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "sass": "^1.70.0"
   },
   "devDependencies": {
-    "@types/luxon": "^3.3.2",
-    "@types/node": "^18.15.5",
-    "@types/react": "^18.0.28",
-    "eslint": "^8.46.0",
-    "eslint-config-next": "^13.4.12",
-    "turbo": "^1.8.5",
-    "typescript": "^4.9.5"
+    "@types/luxon": "^3.4.2",
+    "@types/node": "^20.11.5",
+    "@types/react": "^18.2.48",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "^14.1.0",
+    "prettier": "^3.2.4",
+    "turbo": "^1.11.3",
+    "typescript": "^5.3.3"
   }
 }
