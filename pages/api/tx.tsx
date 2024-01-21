@@ -60,7 +60,6 @@ export default async function handler(req: NextRequest) {
     from,
     to,
     status,
-    createdAt,
     functionName,
     theme,
     title,
@@ -78,7 +77,6 @@ export default async function handler(req: NextRequest) {
     'from',
     'to',
     'status',
-    // 'createdAt',
     'functionName',
     'theme',
     'title',
@@ -197,11 +195,6 @@ export default async function handler(req: NextRequest) {
                     </div>
                   </div>
                 </div>
-                {createdAt && (
-                  <div tw="flex flex-col mt-4">
-                    <div tw="flex items-center text-2xl text-slate-500">{createdAt}</div>
-                  </div>
-                )}
               </div>
             </div>
             <div
