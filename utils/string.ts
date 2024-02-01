@@ -98,4 +98,10 @@ const isValidTransactionHash = (txHash: string) => {
   return txRegex.test(txHash);
 };
 
-export { generateShortAddress, excerpt, getQueryParams, extractQueryParams, isValidTransactionHash };
+export {
+  generateShortAddress,
+  excerpt,
+  getQueryParams,
+  extractQueryParams,
+  isValidTransactionHash,
+};

@@ -13,7 +13,12 @@ import {
 import axios from 'axios';
 import { TENDERLY_API_BASE_URL, Theme } from '@/common/constants';
 import { formatDate } from '@/utils/date';
-import { excerpt, generateShortAddress, getQueryParams, isValidTransactionHash } from '@/utils/string';
+import {
+  excerpt,
+  generateShortAddress,
+  getQueryParams,
+  isValidTransactionHash,
+} from '@/utils/string';
 import { NetworkSelect } from '@/components/NetworkSelect';
 import { CheckIcon } from '@/components/Icons';
 import { formatAmount, parseEthValue } from '@/utils/number';
@@ -45,8 +50,7 @@ const predefinedSearches = [
     name: 'Failed Base Tx',
     network: '8453',
     txHash: '0x6e4519b46393f226c5793282b69ac0aa4616b711838ff150518eae4df2ba500f',
-    className:
-      'border-transparent bg-[#0052FF] text-destructive-foreground hover:bg-[#0052FF]/80',
+    className: 'border-transparent bg-[#0052FF] text-destructive-foreground hover:bg-[#0052FF]/80',
   },
 ];
 
@@ -56,9 +60,7 @@ const LandingPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [txData, setTxData] = useState<Record<string, any>>(null);
   const [network, setNetwork] = useState<string>('1');
-  const [imageUrl, setImageUrl] = useState<string>(
-    'https://dashboard.tenderly.co/Assets/og_image.jpg',
-  );
+  const [imageUrl, setImageUrl] = useState<string>('https://www.txtrace.xyz/og.png');
   const [txHash, setTxHash] = useState<string>('');
   const [txHashError, setTxHashError] = useState<boolean>(false);
 
@@ -178,7 +180,8 @@ const LandingPage = () => {
                   'peer block w-full rounded-md border border-gray-200 bg-white p-4 pr-24 shadow-lg',
                   {
                     'border-red-500': txHashError,
-                  })}
+                  },
+                )}
                 placeholder="Search transaction hash..."
                 type="text"
                 value={txHash}
@@ -228,106 +231,98 @@ const LandingPage = () => {
                 </Link>
               )}
             </div>
-            <Table className="border rounded-md">
-              <TableBody className="font-semibold">
-                {!txData && (
+            {!txData && <div>Data will be shown here 👌</div>}
+            {txData && txData?.error && <div className="text-red-500">{txData?.error}</div>}
+            {txData && !txData?.error && (
+              <Table className="border rounded-md">
+                <TableBody className="font-semibold">
                   <TableRow>
-                    <TableCell>Data will be shown here</TableCell>
+                    <TableCell>Blockchain</TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center gap-1 justify-end">
+                        <img
+                          className="w-6 h-6 border border-[#ADA9A9] rounded-full bg-white"
+                          src={txData?.networkUrl}
+                          alt={txData?.networkName}
+                        />
+                        <span>{txData?.networkName}</span>
+                      </div>
+                    </TableCell>
                   </TableRow>
-                )}
-                {txData && !txData?.error && (
-                  <>
-                    <TableRow>
-                      <TableCell>Blockchain</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex items-center gap-1 justify-end">
-                          <img
-                            className="w-6 h-6 border border-[#ADA9A9] rounded-full bg-white"
-                            src={txData?.networkUrl}
-                            alt={txData?.networkName}
-                          />
-                          <span>{txData?.networkName}</span>
+                  <TableRow>
+                    <TableCell>Transaction Hash</TableCell>
+                    <TableCell className="text-right">
+                      {generateShortAddress(txData?.txHash, 10, 10)}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Status</TableCell>
+                    <TableCell className="text-right">
+                      {!txData?.status && (
+                        <div className={`${failedText} justify-end`}>
+                          <XIcon />
+                          <span className="ml-1">Failed</span>
                         </div>
-                      </TableCell>
-                    </TableRow>
+                      )}
+                      {txData?.status && (
+                        <div className={`${successText} justify-end`}>
+                          <CheckIcon />
+                          <span className="ml-1">Success</span>
+                        </div>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                  {txData?.errorMessage && (
                     <TableRow>
-                      <TableCell>Transaction Hash</TableCell>
+                      <TableCell>Error Message</TableCell>
                       <TableCell className="text-right">
-                        {generateShortAddress(txData?.txHash, 10, 10)}
+                        <span className={`${failedText} justify-end`}>{txData?.errorMessage}</span>
                       </TableCell>
                     </TableRow>
+                  )}
+                  <TableRow>
+                    <TableCell>Block</TableCell>
+                    <TableCell className="text-right">
+                      {formatAmount(txData?.blockNumber, 0)}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Timestamp</TableCell>
+                    <TableCell className="text-right">{txData?.createdAt}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>From</TableCell>
+                    <TableCell className="text-right">
+                      {generateShortAddress(txData?.from, 10, 10)}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>To</TableCell>
+                    <TableCell className="text-right">
+                      {generateShortAddress(txData?.to, 10, 10)}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Gas</TableCell>
+                    <TableCell className="text-right">{formatAmount(txData?.gas, 0)}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Gas Price</TableCell>
+                    <TableCell className="text-right">
+                      {parseEthValue(txData?.gasPrice).value} {parseEthValue(txData?.gasPrice).unit}
+                    </TableCell>
+                  </TableRow>
+                  {txData?.functionName && (
                     <TableRow>
-                      <TableCell>Status</TableCell>
+                      <TableCell>Method Name</TableCell>
                       <TableCell className="text-right">
-                        {!txData?.status && (
-                          <div className={`${failedText} justify-end`}>
-                            <XIcon />
-                            <span className="ml-1">Failed</span>
-                          </div>
-                        )}
-                        {txData?.status && (
-                          <div className={`${successText} justify-end`}>
-                            <CheckIcon />
-                            <span className="ml-1">Success</span>
-                          </div>
-                        )}
+                        {excerpt(txData?.functionName, 20)}()
                       </TableCell>
                     </TableRow>
-                    {txData?.errorMessage && (
-                      <TableRow>
-                        <TableCell>Error Message</TableCell>
-                        <TableCell className="text-right">
-                          <span className={`${failedText} justify-end`}>
-                            {txData?.errorMessage}
-                          </span>
-                        </TableCell>
-                      </TableRow>
-                    )}
-                    <TableRow>
-                      <TableCell>Block</TableCell>
-                      <TableCell className="text-right">
-                        {formatAmount(txData?.blockNumber, 0)}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Timestamp</TableCell>
-                      <TableCell className="text-right">{txData?.createdAt}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>From</TableCell>
-                      <TableCell className="text-right">
-                        {generateShortAddress(txData?.from, 10, 10)}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>To</TableCell>
-                      <TableCell className="text-right">
-                        {generateShortAddress(txData?.to, 10, 10)}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Gas</TableCell>
-                      <TableCell className="text-right">{formatAmount(txData?.gas, 0)}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Gas Price</TableCell>
-                      <TableCell className="text-right">
-                        {parseEthValue(txData?.gasPrice).value}{' '}
-                        {parseEthValue(txData?.gasPrice).unit}
-                      </TableCell>
-                    </TableRow>
-                    {txData?.functionName && (
-                      <TableRow>
-                        <TableCell>Method Name</TableCell>
-                        <TableCell className="text-right">
-                          {excerpt(txData?.functionName, 20)}()
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </>
-                )}
-              </TableBody>
-            </Table>
+                  )}
+                </TableBody>
+              </Table>
+            )}
           </div>
           <div className="flex flex-col gap-4 rounded-md p-4 border">
             <div className="flex flex-col gap-2 justify-between">
