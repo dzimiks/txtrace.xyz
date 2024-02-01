@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
+import { Analytics } from '@vercel/analytics/react';
 import { Toaster } from '@/ui/toaster';
 import { TooltipProvider } from '@/ui/tooltip';
 import '../styles/main.css';
@@ -43,6 +44,7 @@ function App({ Component, pageProps }: AppProps) {
       <TooltipProvider>
         <Component {...pageProps} />
       </TooltipProvider>
+      <Analytics />
       <Toaster />
     </>
   );
