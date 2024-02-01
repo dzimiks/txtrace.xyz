@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { LandingPage } from '@/components/index';
+import { Footer, LandingPage } from '@/components/index';
 
 const TITLE = 'Get Trace for any Transaction Hash | txtrace.xyz';
 const DESCRIPTION = 'Get a transaction trace in one click. More than 35 networks supported.';
@@ -29,7 +29,10 @@ export default function Page() {
         <meta property="twitter:description" content={DESCRIPTION} />
         <meta name="twitter:image" content={OG_IMAGE_URL} />
       </Head>
-      <LandingPage />
+      <div className="flex flex-col justify-between gap-4 min-h-screen h-full">
+        <LandingPage />
+        <Footer />
+      </div>
     </div>
   );
 }

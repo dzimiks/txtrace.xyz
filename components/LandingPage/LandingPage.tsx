@@ -163,7 +163,7 @@ const LandingPage = () => {
   }, []);
 
   return (
-    <div className="flex min-h-screen flex-col justify-between px-4">
+    <div className="flex flex-col justify-between px-4">
       <div className="flex flex-col items-center justify-center gap-12 py-16">
         <h1 className="text-2xl font-bold text-center text-black sm:text-5xl">
           Get trace for any <br />
