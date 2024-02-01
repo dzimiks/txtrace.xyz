@@ -86,4 +86,16 @@ const extractQueryParams = (
   return result;
 };
 
-export { generateShortAddress, excerpt, getQueryParams, extractQueryParams };
+/**
+ * Checks if the given transaction hash is valid.
+ * A valid transaction hash must start with '0x' followed by 64 hexadecimal characters.
+ *
+ * @param {string} txHash - The transaction hash to validate.
+ * @returns {boolean} True if the transaction hash is valid, false otherwise.
+ */
+const isValidTransactionHash = (txHash: string) => {
+  const txRegex = /^0x([A-Fa-f0-9]{64})$/;
+  return txRegex.test(txHash);
+};
+
+export { generateShortAddress, excerpt, getQueryParams, extractQueryParams, isValidTransactionHash };

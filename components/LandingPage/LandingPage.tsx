@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { ArrowUpRightIcon, LoaderIcon, SearchIcon, XIcon } from 'lucide-react';
+import classnames from 'classnames';
 import { Badge, Button, Input, Table, TableBody, TableCell, TableRow } from '@/ui/index';
 import { Network } from '@/types/network';
 import {
@@ -12,7 +13,7 @@ import {
 import axios from 'axios';
 import { TENDERLY_API_BASE_URL, Theme } from '@/common/constants';
 import { formatDate } from '@/utils/date';
-import { excerpt, generateShortAddress, getQueryParams } from '@/utils/string';
+import { excerpt, generateShortAddress, getQueryParams, isValidTransactionHash } from '@/utils/string';
 import { NetworkSelect } from '@/components/NetworkSelect';
 import { CheckIcon } from '@/components/Icons';
 import { formatAmount, parseEthValue } from '@/utils/number';
@@ -40,6 +41,13 @@ const predefinedSearches = [
     className:
       'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80',
   },
+  {
+    name: 'Failed Base Tx',
+    network: '8453',
+    txHash: '0x6e4519b46393f226c5793282b69ac0aa4616b711838ff150518eae4df2ba500f',
+    className:
+      'border-transparent bg-[#0052FF] text-destructive-foreground hover:bg-[#0052FF]/80',
+  },
 ];
 
 const LandingPage = () => {
@@ -52,10 +60,12 @@ const LandingPage = () => {
     'https://dashboard.tenderly.co/Assets/og_image.jpg',
   );
   const [txHash, setTxHash] = useState<string>('');
+  const [txHashError, setTxHashError] = useState<boolean>(false);
 
   const updateSearch = (newNetwork: string, newTxHash: string) => {
     setNetwork(newNetwork);
     setTxHash(newTxHash);
+    setTxHashError(false);
   };
 
   const getTransactionTrace = async () => {
@@ -131,6 +141,18 @@ const LandingPage = () => {
     setLoading(false);
   };
 
+  const handleTxHashChange = (input: string) => {
+    const isValid: boolean = isValidTransactionHash(input);
+
+    if (input && !isValid) {
+      setTxHashError(true);
+    } else {
+      setTxHashError(false);
+    }
+
+    setTxHash(input);
+  };
+
   useEffect(() => {
     (async () => {
       const networks: Network[] = await fetchTenderlyNetworks();
@@ -152,18 +174,22 @@ const LandingPage = () => {
             <NetworkSelect options={tenderlyNetworks} network={network} setNetwork={setNetwork} />
             <div className="flex items-center relative w-full">
               <Input
-                className="peer block w-full rounded-md border border-gray-200 bg-white p-4 pr-24 shadow-lg"
+                className={classnames(
+                  'peer block w-full rounded-md border border-gray-200 bg-white p-4 pr-24 shadow-lg',
+                  {
+                    'border-red-500': txHashError,
+                  })}
                 placeholder="Search transaction hash..."
                 type="text"
                 value={txHash}
-                onChange={e => setTxHash(e.target.value)}
+                onChange={e => handleTxHashChange(e.target.value)}
               />
               <Button
                 className="absolute flex items-center right-0 h-8 my-1.5 mr-1"
                 size="sm"
                 variant="primary"
                 onClick={getTransactionTrace}
-                disabled={!network || !txHash}
+                disabled={!network || !txHash || !isValidTransactionHash(txHash)}
               >
                 {loading && <LoaderIcon size={14} className="mr-1 animate-spin" />}
                 {loading && <span>Searching...</span>}
@@ -172,9 +198,9 @@ const LandingPage = () => {
               </Button>
             </div>
           </div>
-          <div className="flex gap-2 flex-wrap border px-2 py-1 rounded-md mx-auto">
+          <div className="flex gap-2 flex-col px-2 items-center justify-center text-center max-w-xl mx-auto">
             <div className="text-sm font-semibold">Choose from predefined searches:</div>
-            <div className="flex gap-1 flex-wrap">
+            <div className="flex gap-1 flex-wrap justify-center">
               {predefinedSearches.map(item => (
                 <Badge
                   key={item.name}
@@ -195,6 +221,7 @@ const LandingPage = () => {
                 <Link
                   className="link-text-no-underline text-sm flex items-center gap-1"
                   href={`https://dashboard.tenderly.co/tx/${txData.networkId}/${txData.txHash}`}
+                  target="_blank"
                 >
                   <span>See full trace in Tenderly Dashboard</span>
                   <ArrowUpRightIcon size={14} />
@@ -307,8 +334,9 @@ const LandingPage = () => {
               <h3 className="font-semibold text-xl">OG Image</h3>
               {txData?.networkId && (
                 <Link
-                  className="link-text-no-underline text-sm flex items-center gap-1"
+                  className="link-text-no-underline text-sm flex items-center gap-1 break-all"
                   href={`https://tdly.co/tx/${txData.networkId}/${txData.txHash}`}
+                  target="_blank"
                 >
                   <span>{`https://tdly.co/tx/${txData.networkId}/${generateShortAddress(txData.txHash, 10, 10)}`}</span>
                   <ArrowUpRightIcon size={14} />

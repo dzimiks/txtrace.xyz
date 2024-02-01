@@ -27,7 +27,7 @@ const NetworkSelect = ({ options, network, setNetwork }) => {
   useEffect(() => {
     const foundNetwork: Network = options.find((net: Network) => net.id === network);
     setSelectedNetwork(foundNetwork);
-  }, [network]);
+  }, [options, network]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -36,7 +36,7 @@ const NetworkSelect = ({ options, network, setNetwork }) => {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between md:w-[250px]"
+          className="w-full justify-between md:w-[300px]"
         >
           <div className="flex items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap">
             {selectedNetwork?.name && (
@@ -51,7 +51,7 @@ const NetworkSelect = ({ options, network, setNetwork }) => {
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0 md:w-[250px]">
+      <PopoverContent className="w-full p-0 md:w-[300px]">
         <Command>
           <CommandInput placeholder="Search network..." />
           <CommandEmpty>No network found.</CommandEmpty>
