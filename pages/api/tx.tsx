@@ -22,19 +22,12 @@ export const config = {
   runtime: 'edge',
 };
 
-const fontRegular = fetch(
-  new URL('../../assets/fonts/Inter-Regular.ttf', import.meta.url),
-).then(res => res.arrayBuffer());
-
 const fontSemiBold = fetch(
   new URL('../../assets/fonts/Inter-SemiBold.ttf', import.meta.url),
 ).then(res => res.arrayBuffer());
 
 export default async function handler(req: NextRequest) {
-  const [fontRegularData, fontSemiBoldData] = await Promise.all([
-    fontRegular,
-    fontSemiBold,
-  ]);
+  const fontSemiBoldData = await fontSemiBold;
 
   const { searchParams } = req.nextUrl;
 
@@ -188,12 +181,6 @@ export default async function handler(req: NextRequest) {
       width: 1200,
       height: 630,
       fonts: [
-        {
-          name: 'Inter',
-          data: fontRegularData,
-          style: 'normal',
-          weight: 400,
-        },
         {
           name: 'Inter',
           data: fontSemiBoldData,
