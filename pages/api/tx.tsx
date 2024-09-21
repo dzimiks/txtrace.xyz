@@ -22,18 +22,18 @@ export const config = {
   runtime: 'edge',
 };
 
-const fontInterRegular = fetch(
+const fontRegular = fetch(
   new URL('../../assets/fonts/Inter-Regular.ttf', import.meta.url),
 ).then(res => res.arrayBuffer());
 
-const fontInterSemiBold = fetch(
+const fontSemiBold = fetch(
   new URL('../../assets/fonts/Inter-SemiBold.ttf', import.meta.url),
 ).then(res => res.arrayBuffer());
 
 export default async function handler(req: NextRequest) {
-  const [fontInterRegularData, fontInterSemiBoldData] = await Promise.all([
-    fontInterRegular,
-    fontInterSemiBold,
+  const [fontRegularData, fontSemiBoldData] = await Promise.all([
+    fontRegular,
+    fontSemiBold,
   ]);
 
   const { searchParams } = req.nextUrl;
@@ -107,22 +107,22 @@ export default async function handler(req: NextRequest) {
                 <div tw="flex items-center font-medium mb-4">
                   <span tw="text-5xl">{generateShortAddress(txHash, 10, 10)}</span>
                   {!status && (
-                    <span tw={`${failedBox} ml-2`}>
-                        <XIcon />
-                        <span tw="ml-1">Failed</span>
-                      </span>
+                    <div tw={`${failedBox} ml-2`}>
+                      <XIcon />
+                      <span tw="ml-1">Failed</span>
+                    </div>
                   )}
                   {status && (
-                    <span tw={`${successBox} ml-2`}>
-                        <CheckIcon />
-                        <span tw="ml-1">Success</span>
-                      </span>
+                    <div tw={`${successBox} ml-2`}>
+                      <CheckIcon />
+                      <span tw="ml-1">Success</span>
+                    </div>
                   )}
                 </div>
                 <div tw="flex">
                   <div tw={`${boxStyle} mr-4`}>
                     <img
-                      tw="w-10 h-10 border border-[#ADA9A9] rounded-full bg-white"
+                      tw="w-10 h-10"
                       src={networkUrl}
                       alt={networkName}
                     />
@@ -190,13 +190,13 @@ export default async function handler(req: NextRequest) {
       fonts: [
         {
           name: 'Inter',
-          data: fontInterRegularData,
+          data: fontRegularData,
           style: 'normal',
           weight: 400,
         },
         {
           name: 'Inter',
-          data: fontInterSemiBoldData,
+          data: fontSemiBoldData,
           style: 'normal',
           weight: 500,
         },

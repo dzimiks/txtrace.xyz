@@ -359,7 +359,7 @@ const LandingPage = () => {
             <Link
               href={
                 txHash
-                  ? `https://dashboard.tenderly.co/tx/${findTenderlyNetworkById(network, tenderlyNetworks)?.name}/${txHash}`
+                  ? `https://dashboard.tenderly.co/tx/${findTenderlyNetworkById(network, tenderlyNetworks)?.id}/${txHash}`
                   : '#'
               }
             >
