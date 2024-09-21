@@ -4,3 +4,5 @@ export enum Theme {
   LIGHT = 'light',
   DARK = 'dark',
 }
+
+export const StoragePublicAssetsUrl = 'https://storage.googleapis.com/tenderly-public-assets';

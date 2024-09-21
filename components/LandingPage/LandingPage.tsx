@@ -11,7 +11,7 @@ import {
   isNetworkSupportedByTenderly,
 } from '@/utils/tenderly';
 import axios from 'axios';
-import { TENDERLY_API_BASE_URL, Theme } from '@/common/constants';
+import { StoragePublicAssetsUrl, TENDERLY_API_BASE_URL, Theme } from '@/common/constants';
 import { formatDate } from '@/utils/date';
 import {
   excerpt,
@@ -51,6 +51,12 @@ const predefinedSearches = [
     network: '8453',
     txHash: '0x6e4519b46393f226c5793282b69ac0aa4616b711838ff150518eae4df2ba500f',
     className: 'border-transparent bg-[#0052FF] text-destructive-foreground hover:bg-[#0052FF]/80',
+  },
+  {
+    name: 'Failed Polygon Tx',
+    network: '137',
+    txHash: '0xaea7a8da3f0c06a3db2310ca6a031744d596ac31e2845955e896136793458ff2',
+    className: 'border-transparent bg-[#8a46ff] text-destructive-foreground hover:bg-[#6e38cc]',
   },
 ];
 
@@ -114,7 +120,7 @@ const LandingPage = () => {
         blockNumber: response.data.block_number,
         networkId: response.data.network_id,
         networkName: tenderlyNetwork?.name ?? null,
-        networkUrl: tenderlyNetwork?.logo ?? null,
+        networkUrl: `${StoragePublicAssetsUrl}/networks/${tenderlyNetwork.id}.svg`,
         gas: response.data.gas,
         gasPrice: response.data.gas_price,
         txHash,
@@ -140,6 +146,7 @@ const LandingPage = () => {
     const queryParams = getQueryParams(data);
     setImageUrl(`https://www.txtrace.xyz/api/tx?${queryParams}`);
     setTxData(data);
+    console.log({ data });
     setLoading(false);
   };
 
@@ -165,13 +172,16 @@ const LandingPage = () => {
   return (
     <div className="flex flex-col justify-between px-4">
       <div className="flex flex-col items-center justify-center gap-12 py-16">
-        <h1 className="text-2xl font-bold text-center text-black sm:text-5xl">
-          Get trace for any <br />
-          <span className="bg-gradient-to-r from-red-500 to-purple-500 bg-clip-text text-transparent">
-            Transaction Hash
-          </span>
-        </h1>
-        <div className="flex flex-col gap-4 w-full max-w-4xl">
+        <div className="flex flex-col items-center justify-center gap-4">
+          <h1 className="text-3xl font-bold text-center text-black sm:text-5xl">
+            Get a trace for any <br />
+            <span className="bg-gradient-to-r from-red-500 to-violet-500 bg-clip-text text-transparent">
+              Transaction Hash
+            </span>
+          </h1>
+          <h3 className="text-lg font-semibold text-center">Analyze web3 transactions across multiple networks in seconds</h3>
+        </div>
+        <div className="flex flex-col gap-8 w-full max-w-4xl">
           <div className="flex flex-col gap-2 md:items-center md:flex-row">
             <NetworkSelect options={tenderlyNetworks} network={network} setNetwork={setNetwork} />
             <div className="flex items-center relative w-full">
@@ -188,7 +198,7 @@ const LandingPage = () => {
                 onChange={e => handleTxHashChange(e.target.value)}
               />
               <Button
-                className="absolute flex items-center right-0 h-8 my-1.5 mr-1"
+                className="absolute flex items-center right-0 h-8 my-1.5 mr-1 bg-violet-500 hover:bg-violet-400"
                 size="sm"
                 variant="primary"
                 onClick={getTransactionTrace}
@@ -201,8 +211,8 @@ const LandingPage = () => {
               </Button>
             </div>
           </div>
-          <div className="flex gap-2 flex-col px-2 items-center justify-center text-center max-w-xl mx-auto">
-            <div className="text-sm font-semibold">Choose from predefined searches:</div>
+          <div className="flex gap-2 flex-col px-2 items-center justify-center text-center max-w-2xl mx-auto">
+            <div className="font-semibold">Explore Predefined Searches</div>
             <div className="flex gap-1 flex-wrap justify-center">
               {predefinedSearches.map(item => (
                 <Badge
@@ -217,10 +227,10 @@ const LandingPage = () => {
           </div>
         </div>
         <div className="grid grid-cols-auto-fill-full gap-6 w-full max-w-7xl mx-auto md:grid-cols-2">
-          <div className="flex flex-col gap-4 rounded-md p-4 border">
+          <div className="flex flex-col gap-4 rounded-md p-4 border bg-white">
             <div className="flex flex-col gap-2 justify-between">
               <h3 className="font-semibold text-xl">Transaction Overview</h3>
-              {txData?.networkId && (
+              {!loading && txData?.networkId && (
                 <Link
                   className="link-text-no-underline text-sm flex items-center gap-1"
                   href={`https://dashboard.tenderly.co/tx/${txData.networkId}/${txData.txHash}`}
@@ -231,102 +241,111 @@ const LandingPage = () => {
                 </Link>
               )}
             </div>
-            {!txData && <div>Data will be shown here 👌</div>}
-            {txData && txData?.error && <div className="text-red-500">{txData?.error}</div>}
-            {txData && !txData?.error && (
-              <Table className="border rounded-md">
-                <TableBody className="font-semibold">
-                  <TableRow>
-                    <TableCell>Blockchain</TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex items-center gap-1 justify-end">
-                        <img
-                          className="w-6 h-6 border border-[#ADA9A9] rounded-full bg-white"
-                          src={txData?.networkUrl}
-                          alt={txData?.networkName}
-                        />
-                        <span>{txData?.networkName}</span>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Transaction Hash</TableCell>
-                    <TableCell className="text-right">
-                      {generateShortAddress(txData?.txHash, 10, 10)}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Status</TableCell>
-                    <TableCell className="text-right">
-                      {!txData?.status && (
-                        <div className={`${failedText} justify-end`}>
-                          <XIcon />
-                          <span className="ml-1">Failed</span>
-                        </div>
+            {loading && (
+              <div className="flex flex-col items-center justify-center h-full p-4">
+                <LoaderIcon size={24} className="mr-1 animate-spin" />
+              </div>
+            )}
+            {!loading && (
+              <>
+                {!txData && <div>Data will be shown here 👌</div>}
+                {txData && txData?.error && <div className="text-red-500">{txData?.error}</div>}
+                {txData && !txData?.error && (
+                  <Table className="border rounded-md">
+                    <TableBody className="font-semibold">
+                      <TableRow>
+                        <TableCell>Blockchain</TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center gap-1 justify-end">
+                            <img
+                              className="w-6 h-6 bg-gray-200"
+                              src={txData?.networkUrl}
+                              alt={txData?.networkName}
+                            />
+                            <span>{txData?.networkName}</span>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Transaction Hash</TableCell>
+                        <TableCell className="text-right">
+                          {generateShortAddress(txData?.txHash, 10, 10)}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Status</TableCell>
+                        <TableCell className="text-right">
+                          {!txData?.status && (
+                            <div className={`${failedText} justify-end`}>
+                              <XIcon />
+                              <span className="ml-1">Failed</span>
+                            </div>
+                          )}
+                          {txData?.status && (
+                            <div className={`${successText} justify-end`}>
+                              <CheckIcon />
+                              <span className="ml-1">Success</span>
+                            </div>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                      {txData?.errorMessage && (
+                        <TableRow>
+                          <TableCell>Error Message</TableCell>
+                          <TableCell className="text-right">
+                            <span className={`${failedText} justify-end`}>{txData?.errorMessage}</span>
+                          </TableCell>
+                        </TableRow>
                       )}
-                      {txData?.status && (
-                        <div className={`${successText} justify-end`}>
-                          <CheckIcon />
-                          <span className="ml-1">Success</span>
-                        </div>
+                      <TableRow>
+                        <TableCell>Block</TableCell>
+                        <TableCell className="text-right">
+                          {formatAmount(txData?.blockNumber, 0)}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Timestamp</TableCell>
+                        <TableCell className="text-right">{txData?.createdAt}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>From</TableCell>
+                        <TableCell className="text-right">
+                          {generateShortAddress(txData?.from, 10, 10)}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>To</TableCell>
+                        <TableCell className="text-right">
+                          {generateShortAddress(txData?.to, 10, 10)}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Gas</TableCell>
+                        <TableCell className="text-right">{formatAmount(txData?.gas, 0)}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Gas Price</TableCell>
+                        <TableCell className="text-right">
+                          {parseEthValue(txData?.gasPrice).value} {parseEthValue(txData?.gasPrice).unit}
+                        </TableCell>
+                      </TableRow>
+                      {txData?.functionName && (
+                        <TableRow>
+                          <TableCell>Method Name</TableCell>
+                          <TableCell className="text-right">
+                            {excerpt(txData?.functionName, 20)}()
+                          </TableCell>
+                        </TableRow>
                       )}
-                    </TableCell>
-                  </TableRow>
-                  {txData?.errorMessage && (
-                    <TableRow>
-                      <TableCell>Error Message</TableCell>
-                      <TableCell className="text-right">
-                        <span className={`${failedText} justify-end`}>{txData?.errorMessage}</span>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                  <TableRow>
-                    <TableCell>Block</TableCell>
-                    <TableCell className="text-right">
-                      {formatAmount(txData?.blockNumber, 0)}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Timestamp</TableCell>
-                    <TableCell className="text-right">{txData?.createdAt}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>From</TableCell>
-                    <TableCell className="text-right">
-                      {generateShortAddress(txData?.from, 10, 10)}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>To</TableCell>
-                    <TableCell className="text-right">
-                      {generateShortAddress(txData?.to, 10, 10)}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Gas</TableCell>
-                    <TableCell className="text-right">{formatAmount(txData?.gas, 0)}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Gas Price</TableCell>
-                    <TableCell className="text-right">
-                      {parseEthValue(txData?.gasPrice).value} {parseEthValue(txData?.gasPrice).unit}
-                    </TableCell>
-                  </TableRow>
-                  {txData?.functionName && (
-                    <TableRow>
-                      <TableCell>Method Name</TableCell>
-                      <TableCell className="text-right">
-                        {excerpt(txData?.functionName, 20)}()
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
+                    </TableBody>
+                  </Table>
+                )}
+              </>
             )}
           </div>
-          <div className="flex flex-col gap-4 rounded-md p-4 border">
+          <div className="flex flex-col gap-4 rounded-md p-4 border bg-white">
             <div className="flex flex-col gap-2 justify-between">
-              <h3 className="font-semibold text-xl">OG Image</h3>
+              <h3 className="font-semibold text-xl">OG Image Preview</h3>
               {txData?.networkId && (
                 <Link
                   className="link-text-no-underline text-sm flex items-center gap-1 break-all"

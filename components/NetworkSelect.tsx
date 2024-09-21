@@ -12,6 +12,7 @@ import {
   PopoverTrigger,
 } from '@/ui/index';
 import { Network } from '@/types/network';
+import { StoragePublicAssetsUrl } from '@/common/constants';
 
 const NetworkSelect = ({ options, network, setNetwork }) => {
   const [open, setOpen] = useState<boolean>(false);
@@ -36,13 +37,13 @@ const NetworkSelect = ({ options, network, setNetwork }) => {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between md:w-[300px]"
+          className="w-full justify-between bg-white md:w-[300px]"
         >
           <div className="flex items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap">
             {selectedNetwork?.name && (
               <img
-                className="w-6 h-6 rounded-full"
-                src={selectedNetwork.logo}
+                className="w-6 h-6 bg-gray-200"
+                src={`${StoragePublicAssetsUrl}/networks/${selectedNetwork.id}.svg`}
                 alt={selectedNetwork.name}
               />
             )}
@@ -51,7 +52,7 @@ const NetworkSelect = ({ options, network, setNetwork }) => {
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0 md:w-[300px]">
+      <PopoverContent className="w-full p-0 md:w-[230px]">
         <Command>
           <CommandInput placeholder="Search network..." />
           <CommandEmpty>No network found.</CommandEmpty>
@@ -67,8 +68,8 @@ const NetworkSelect = ({ options, network, setNetwork }) => {
                   }}
                 >
                   <img
-                    className="w-6 h-6 rounded-full mr-2"
-                    src={network.logo}
+                    className="w-6 h-6 bg-gray-200 mr-2"
+                    src={`${StoragePublicAssetsUrl}/networks/${network.id}.svg`}
                     alt={network.name}
                   />
                   <span className="font-semibold">{network.name}</span>

@@ -3,6 +3,8 @@
 body {
   margin: 0;
   padding: 0;
+  background: white radial-gradient(lightgray 1px, transparent 0) -19px -19px;
+  background-size: 40px 40px;
   font-family:
     'Inter',
     -apple-system,

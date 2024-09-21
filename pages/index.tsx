@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import { Footer, LandingPage } from '@/components/index';
 
-const TITLE = 'Get Trace for any Transaction Hash | txtrace.xyz';
-const DESCRIPTION = 'Get a transaction trace in one click. More than 35 networks supported.';
+const TITLE = 'Instant Transaction Trace & OG Image Preview | txtrace.xyz';
+const DESCRIPTION = 'Easily analyze any blockchain transaction. Paste a tx hash, select a Tenderly-supported network, and instantly view detailed traces and OG image previews.';
 const WEBSITE_URL = 'https://www.txtrace.xyz';
 const OG_IMAGE_URL = 'https://www.txtrace.xyz/og.png';
 
