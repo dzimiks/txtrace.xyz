@@ -146,7 +146,6 @@ const LandingPage = () => {
     const queryParams = getQueryParams(data);
     setImageUrl(`https://www.txtrace.xyz/api/tx?${queryParams}`);
     setTxData(data);
-    console.log({ data });
     setLoading(false);
   };
 
