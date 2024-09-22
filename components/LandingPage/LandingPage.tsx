@@ -10,6 +10,7 @@ import {
   getNetworkForRouteSlug,
   isNetworkSupportedByTenderly,
 } from '@/utils/tenderly';
+import { sendGAEvent } from '@next/third-parties/google';
 import axios from 'axios';
 import { StoragePublicAssetsUrl, TENDERLY_API_BASE_URL, Theme } from '@/common/constants';
 import { formatDate } from '@/utils/date';
@@ -78,6 +79,7 @@ const LandingPage = () => {
 
   const getTransactionTrace = async () => {
     let data: Record<string, any>;
+    sendGAEvent('event', 'getTransactionTrace', { network, txHash });
 
     try {
       setLoading(true);
@@ -178,7 +180,8 @@ const LandingPage = () => {
               Transaction Hash
             </span>
           </h1>
-          <h3 className="text-lg font-semibold text-center">Analyze web3 transactions across multiple networks in seconds</h3>
+          <h3 className="text-lg font-semibold text-center">Analyze web3 transactions across multiple networks in
+            seconds</h3>
         </div>
         <div className="flex flex-col gap-8 w-full max-w-4xl">
           <div className="flex flex-col gap-2 md:items-center md:flex-row">
