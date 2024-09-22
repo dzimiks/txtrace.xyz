@@ -3,6 +3,7 @@ import type { AppProps } from 'next/app';
 import { Analytics } from '@vercel/analytics/react';
 import { Toaster } from '@/ui/toaster';
 import { TooltipProvider } from '@/ui/tooltip';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import '../styles/main.css';
 
 // Shim requestIdleCallback in Safari
@@ -43,6 +44,7 @@ function App({ Component, pageProps }: AppProps) {
       </Head>
       <TooltipProvider>
         <Component {...pageProps} />
+        <GoogleAnalytics gaId="G-3Z7RLDTEPH" />
       </TooltipProvider>
       <Analytics />
       <Toaster />
