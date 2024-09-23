@@ -20,14 +20,14 @@ export default function Page() {
         <meta property="og:url" content={WEBSITE_URL} />
         <meta property="og:title" content={TITLE} />
         <meta property="og:description" content={DESCRIPTION} />
-        <meta name="og:image" content={OG_IMAGE_URL} />
+        <meta property="og:image" content={OG_IMAGE_URL} />
 
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content={WEBSITE_URL} />
         <meta property="twitter:title" content={TITLE} />
         <meta property="twitter:description" content={DESCRIPTION} />
-        <meta name="twitter:image" content={OG_IMAGE_URL} />
+        <meta property="twitter:image" content={OG_IMAGE_URL} />
       </Head>
       <div className="flex flex-col justify-between gap-4 min-h-screen h-full">
         <LandingPage />
