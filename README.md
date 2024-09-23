@@ -1,5 +1,19 @@
 # txtrace.xyz
 
+<div align="center">
+    <a href="https://dashboard.tenderly.co/register">
+        <img src="./public/product.png" alt="txtrace.xyz" width="100%" height="auto" style="background-color: #ffffffb2; padding: 10px 20px; margin-bottom: 20px; box-sizing: border-box; max-width:200px;" />
+    </a>
+</div>
+
+<div align="center">
+
+[![License](https://img.shields.io/github/license/dzimiks/txtrace.xyz)](./LICENSE)
+[![Twitter](https://img.shields.io/twitter/follow/TenderlyApp?style=social)](https://twitter.com/intent/follow?screen_name=TenderlyApp)
+[![Github](https://img.shields.io/github/stars/dzimiks/txtrace.xyz?style=social)](https://github.com/dzimiks/txtrace.xyz)
+
+</div>
+
 TxTrace is an open-source web application that allows users to easily analyze blockchain transactions across multiple networks supported by [Tenderly](https://tenderly.co).
 
 ## Features
